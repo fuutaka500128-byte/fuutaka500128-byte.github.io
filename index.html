@@ -2,56 +2,76 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>新幹線 発車案内</title>
+<title>新幹線案内表示</title>
 
 <style>
-/* ===== 全体 ===== */
+/* 画面全体 */
 body {
   margin: 0;
-  background: white;
-  font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+  background: #ffffff;
+  overflow: hidden;
 }
 
-/* ===== 下部電光掲示 ===== */
+/* 下部表示エリア */
 .ticker {
   position: fixed;
   bottom: 0;
   width: 100%;
   background: black;
   overflow: hidden;
-  white-space: nowrap;
-  padding: 12px 0;
-  box-sizing: border-box;
+  padding: 8px 0;
 }
 
-/* ===== 流れる本体 ===== */
-.ticker-track {
+/* スクロール全体 */
+.ticker-inner {
   display: inline-block;
+  white-space: nowrap;
   padding-left: 100%;
-  animation: scroll 30s linear infinite;
+  animation: scroll 28s linear infinite;
 }
 
-/* ===== 各列車 ===== */
+/* 1列車ブロック */
 .train {
   display: inline-block;
-  margin-right: 60px;
-  font-size: 28px;
-  line-height: 1.4;
+  margin-right: 100px;
+  font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
 }
 
-/* ===== 色分け ===== */
-.nozomi { color: yellow; }
-.hikari { color: red; }
-.kodama { color: deepskyblue; }
-.mizuho { color: orange; }
-.sakura { color: pink; }
-.tsubame { color: lightblue; }
+/* 上段 */
+.row-top {
+  font-size: 26px;
+  line-height: 1.2;
+}
 
-/* ===== スクロール ===== */
+/* 下段 */
+.row-bottom {
+  font-size: 32px;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+/* 時間 */
+.time {
+  color: white;
+  margin-right: 14px;
+}
+
+/* 行先 */
+.dest {
+  color: white;
+  font-weight: bold;
+}
+
+/* 列車名 色分け */
+.nozomi .name { color: yellow; }
+.hikari .name { color: red; }
+.mizuho .name { color: orange; }
+.sakura .name { color: pink; }
+.kodama .name { color: deepskyblue; }
+
+/* スクロール */
 @keyframes scroll {
-  0%   { transform: translateX(0); }
+  0% { transform: translateX(0); }
   100% { transform: translateX(-100%); }
 }
 </style>
@@ -60,13 +80,38 @@ body {
 <body>
 
 <div class="ticker">
-  <div class="ticker-track">
-    <span class="train nozomi">10:03 のぞみ3号　東京</span>
-    <span class="train hikari">10:12 ひかり512号　新大阪</span>
-    <span class="train kodama">10:25 こだま715号　新大阪</span>
-    <span class="train sakura">10:33 さくら401号　鹿児島中央</span>
-    <span class="train mizuho">10:45 みずほ601号　鹿児島中央</span>
-    <span class="train tsubame">10:58 つばめ329号　熊本</span>
+  <div class="ticker-inner">
+
+    <div class="train mizuho">
+      <div class="row-top">
+        <span class="time">10:45</span>
+        <span class="name">みずほ601号</span>
+      </div>
+      <div class="row-bottom">
+        <span class="dest">鹿児島中央</span>
+      </div>
+    </div>
+
+    <div class="train hikari">
+      <div class="row-top">
+        <span class="time">10:12</span>
+        <span class="name">ひかり512号</span>
+      </div>
+      <div class="row-bottom">
+        <span class="dest">新大阪</span>
+      </div>
+    </div>
+
+    <div class="train nozomi">
+      <div class="row-top">
+        <span class="time">10:03</span>
+        <span class="name">のぞみ3号</span>
+      </div>
+      <div class="row-bottom">
+        <span class="dest">東京</span>
+      </div>
+    </div>
+
   </div>
 </div>
 
