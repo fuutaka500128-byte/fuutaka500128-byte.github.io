@@ -2,77 +2,67 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>新幹線案内表示</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>博多駅 新幹線 発車案内</title>
 
 <style>
-/* 画面全体 */
 body {
   margin: 0;
-  background: #ffffff;
-  overflow: hidden;
+  background: #fff;
+  font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
 }
 
-/* 下部表示エリア */
+/* 表示エリア */
 .ticker {
   position: fixed;
   bottom: 0;
   width: 100%;
   background: black;
   overflow: hidden;
-  padding: 8px 0;
+  padding: 10px 0;
 }
 
-/* スクロール全体 */
-.ticker-inner {
+/* 流れる本体 */
+.track {
   display: inline-block;
   white-space: nowrap;
-  padding-left: 100%;
-  animation: scroll 28s linear infinite;
+  animation: scroll 35s linear infinite;
 }
 
-/* 1列車ブロック */
+/* 1列車 */
 .train {
   display: inline-block;
   margin-right: 100px;
-  font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
 }
 
 /* 上段 */
-.row-top {
+.top {
   font-size: 26px;
   line-height: 1.2;
+  color: white;
 }
 
 /* 下段 */
-.row-bottom {
-  font-size: 32px;
+.bottom {
+  font-size: 30px;
   line-height: 1.2;
   margin-top: 2px;
-}
-
-/* 時間 */
-.time {
-  color: white;
-  margin-right: 14px;
-}
-
-/* 行先 */
-.dest {
   color: white;
   font-weight: bold;
 }
 
-/* 列車名 色分け */
-.nozomi .name { color: yellow; }
-.hikari .name { color: red; }
-.mizuho .name { color: orange; }
-.sakura .name { color: pink; }
-.kodama .name { color: deepskyblue; }
+/* 種別色（列車名のみ） */
+.nozomi  { color: yellow; }
+.hikari  { color: red; }
+.kodama  { color: deepskyblue; }
+.mizuho  { color: orange; }
+.sakura  { color: pink; }
+.tsubame { color: lightblue; }
 
 /* スクロール */
 @keyframes scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
+  from { transform: translateX(100%); }
+  to   { transform: translateX(-100%); }
 }
 </style>
 </head>
@@ -80,40 +70,56 @@ body {
 <body>
 
 <div class="ticker">
-  <div class="ticker-inner">
-
-    <div class="train mizuho">
-      <div class="row-top">
-        <span class="time">10:45</span>
-        <span class="name">みずほ601号</span>
-      </div>
-      <div class="row-bottom">
-        <span class="dest">鹿児島中央</span>
-      </div>
-    </div>
-
-    <div class="train hikari">
-      <div class="row-top">
-        <span class="time">10:12</span>
-        <span class="name">ひかり512号</span>
-      </div>
-      <div class="row-bottom">
-        <span class="dest">新大阪</span>
-      </div>
-    </div>
-
-    <div class="train nozomi">
-      <div class="row-top">
-        <span class="time">10:03</span>
-        <span class="name">のぞみ3号</span>
-      </div>
-      <div class="row-bottom">
-        <span class="dest">東京</span>
-      </div>
-    </div>
-
-  </div>
+  <div class="track" id="track"></div>
 </div>
+
+<script>
+/* ==========================
+   博多駅 新幹線 全ダイヤ（例）
+   ※ここを公式時刻表で増やす
+========================== */
+const timetable = [
+  { time:"06:00", name:"のぞみ1号",  type:"nozomi",  dest:"東京" },
+  { time:"06:10", name:"さくら401号", type:"sakura", dest:"鹿児島中央" },
+  { time:"06:30", name:"みずほ601号", type:"mizuho", dest:"鹿児島中央" },
+  { time:"06:45", name:"ひかり512号", type:"hikari", dest:"新大阪" },
+  { time:"07:00", name:"こだま715号", type:"kodama", dest:"新大阪" },
+  { time:"07:12", name:"のぞみ3号",   type:"nozomi",  dest:"東京" },
+  { time:"07:30", name:"さくら403号", type:"sakura", dest:"鹿児島中央" },
+  { time:"07:45", name:"ひかり514号", type:"hikari", dest:"新大阪" }
+  // ← ここに全列車を追加
+];
+
+/* ===== 現在時刻以降を抽出 ===== */
+function getNextTrains(count = 6) {
+  const now = new Date();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+
+  return timetable.filter(t => {
+    const [h,m] = t.time.split(":").map(Number);
+    return (h*60 + m) >= nowMin;
+  }).slice(0, count);
+}
+
+/* ===== 表示 ===== */
+const track = document.getElementById("track");
+const nextTrains = getNextTrains(6);
+
+nextTrains.forEach(t => {
+  const div = document.createElement("div");
+  div.className = "train";
+
+  div.innerHTML = `
+    <div class="top">
+      <span>${t.time}</span>
+      <span class="${t.type}">${t.name}</span>
+    </div>
+    <div class="bottom">${t.dest}</div>
+  `;
+
+  track.appendChild(div);
+});
+</script>
 
 </body>
 </html>
