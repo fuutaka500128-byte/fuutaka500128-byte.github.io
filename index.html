@@ -1,51 +1,17 @@
-<style>
-  body {
-    margin: 0;
-    background: black;
-    overflow: hidden;
-    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-  }
+<div class="board">
+  <div class="scroll">
+    <div class="content">
+      <!-- 1周目 -->
+      <div class="train nozomi">のぞみ<span class="time">22:55</span><span class="dest">鹿児島中央</span></div>
+      <div class="train sakura">さくら<span class="time">22:54</span><span class="dest">新大阪</span></div>
+      <div class="train kodama">こだま<span class="time">22:30</span><span class="dest">鹿児島中央</span></div>
+    </div>
 
-  .board {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-    background: black;
-  }
-
-  .scroll {
-    display: flex;
-    width: max-content;
-    animation: scroll 40s linear infinite;
-    padding-left: 16px;   /* ← ここ */
-    padding-right: 16px;  /* ← ここ */
-  }
-
-  .train {
-    display: inline-flex;
-    align-items: center;
-    margin-right: 16px;
-    font-size: 24px;
-    white-space: nowrap;
-  }
-
-  .nozomi { color: #ffd400; }
-  .mizuho { color: #ff9800; }
-  .sakura { color: #ff6fae; }
-  .kodama { color: #4da6ff; }
-  .tsubame { color: #66e0e0; }
-
-  .time, .dest {
-    color: white;
-    margin-left: 8px;
-  }
-
-  @keyframes scroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
-  }
-</style>
+    <div class="content">
+      <!-- 2周目（同じ内容） -->
+      <div class="train nozomi">のぞみ<span class="time">22:55</span><span class="dest">鹿児島中央</span></div>
+      <div class="train sakura">さくら<span class="time">22:54</span><span class="dest">新大阪</span></div>
+      <div class="train kodama">こだま<span class="time">22:30</span><span class="dest">鹿児島中央</span></div>
+    </div>
+  </div>
+</div>
