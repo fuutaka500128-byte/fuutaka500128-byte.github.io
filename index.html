@@ -11,7 +11,6 @@ body {
   background: black;
   color: white;
   font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", sans-serif;
-  overflow: hidden;
 }
 
 /* タイトル */
@@ -22,22 +21,11 @@ header {
   border-bottom: 1px solid #333;
 }
 
-/* スクロールエリア */
-#scroll-area {
-  height: calc(100vh - 96px);
-  overflow: hidden;
+/* 発車案内エリア（上固定） */
+#board {
+  padding-bottom: 60px; /* 下テロップ分の余白 */
 }
 
-#list {
-  animation: scroll-up 20s linear infinite;
-}
-
-@keyframes scroll-up {
-  from { transform: translateY(0); }
-  to   { transform: translateY(-50%); }
-}
-
-/* 行 */
 .train {
   display: grid;
   grid-template-columns: 1.2fr 1fr 1fr 1.6fr;
@@ -46,7 +34,7 @@ header {
   font-size: 18px;
 }
 
-/* 色 */
+/* 色分け */
 .nozomi { color: #ffd700; }
 .hikari { color: #ff4444; }
 .mizuho { color: #ff9900; }
@@ -58,7 +46,7 @@ header {
   color: white;
 }
 
-/* 下部テロップ */
+/* 下部テロップ（固定） */
 #ticker {
   position: fixed;
   bottom: 0;
@@ -89,50 +77,35 @@ header {
 
 <header>博多駅 新幹線 発車案内</header>
 
-<div id="scroll-area">
-  <div id="list">
+<div id="board">
 
-    <div class="train mizuho" data-time="22:30">
-      <div>みずほ</div><div>612号</div>
-      <div class="time">22:30</div>
-      <div class="dest">鹿児島中央</div>
-    </div>
-
-    <div class="train kodama" data-time="22:42">
-      <div>こだま</div><div>856号</div>
-      <div class="time">22:42</div>
-      <div class="dest">博多</div>
-    </div>
-
-    <div class="train tsubame" data-time="22:55">
-      <div>つばめ</div><div>321号</div>
-      <div class="time">22:55</div>
-      <div class="dest">鹿児島中央</div>
-    </div>
-
-    <!-- 無限スクロール用コピー -->
-    <div class="train mizuho" data-time="22:30">
-      <div>みずほ</div><div>612号</div>
-      <div class="time">22:30</div>
-      <div class="dest">鹿児島中央</div>
-    </div>
-
-    <div class="train kodama" data-time="22:42">
-      <div>こだま</div><div>856号</div>
-      <div class="time">22:42</div>
-      <div class="dest">博多</div>
-    </div>
-
-    <div class="train tsubame" data-time="22:55">
-      <div>つばめ</div><div>321号</div>
-      <div class="time">22:55</div>
-      <div class="dest">鹿児島中央</div>
-    </div>
-
+  <div class="train kodama" data-time="22:42">
+    <div>こだま</div><div>856号</div>
+    <div class="time">22:42</div>
+    <div class="dest">博多</div>
   </div>
+
+  <div class="train tsubame" data-time="22:55">
+    <div>つばめ</div><div>321号</div>
+    <div class="time">22:55</div>
+    <div class="dest">鹿児島中央</div>
+  </div>
+
+  <div class="train kodama" data-time="22:42">
+    <div>こだま</div><div>856号</div>
+    <div class="time">22:42</div>
+    <div class="dest">博多</div>
+  </div>
+
+  <div class="train tsubame" data-time="22:55">
+    <div>つばめ</div><div>321号</div>
+    <div class="time">22:55</div>
+    <div class="dest">鹿児島中央</div>
+  </div>
+
 </div>
 
-<!-- 下部テロップ -->
+<!-- 下テロップ -->
 <div id="ticker">
   <div id="ticker-text">
     ★ 新幹線をご利用くださいましてありがとうございます。発車時刻にご注意ください ★
