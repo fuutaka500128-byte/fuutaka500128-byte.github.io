@@ -2,32 +2,59 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>博多駅 新幹線 発車案内</title>
+
 <style>
-body {
-  background: black;
-  color: white;
-  font-family: sans-serif;
-}
-h1 {
-  text-align: center;
-}
-.row {
-  display: grid;
-  grid-template-columns: 80px 80px 100px auto;
-  padding: 8px;
-  border-bottom: 1px solid #333;
-}
-.nozomi { color: yellow; }
-.hikari { color: cyan; }
-.kodama { color: lightgreen; }
-.sakura { color: pink; }
-.mizuho { color: orange; }
+  body {
+    margin: 0;
+    background: #000;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+                 "Yu Gothic", Meiryo, sans-serif;
+  }
+
+  h1 {
+    text-align: center;
+    margin: 10px 0;
+    font-size: 20px;
+  }
+
+  /* 表示エリア（ここがスクロール枠） */
+  #board {
+    height: 70vh;
+    overflow: hidden;
+    padding: 0 10px;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 60px 60px 60px 1fr;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    padding: 6px 0;
+    font-size: 16px;
+  }
+
+  /* 種別カラー */
+  .nozomi { color: #ffd400; }   /* 黄色 */
+  .hikari { color: #00e5ff; }
+  .sakura { color: #ff8ad8; }
+  .mizuho { color: #ff9800; }
+  .kodama { color: #00ff7f; }
+  .tsubame { color: #aaa; }
+
+  .time {
+    text-align: right;
+    padding-right: 5px;
+  }
 </style>
 </head>
+
 <body>
 
 <h1>博多駅 新幹線 発車案内</h1>
+
 <div id="board"></div>
 
 <script>
@@ -38,6 +65,7 @@ function loadTimetable() {
     .then(res => res.json())
     .then(data => {
       board.innerHTML = "";
+
       const now = new Date();
       const nowMinutes = now.getHours() * 60 + now.getMinutes();
 
@@ -47,28 +75,43 @@ function loadTimetable() {
         if (trainMinutes < nowMinutes) return;
 
         const row = document.createElement("div");
-        row.className = "row " + ({
+        row.className = "row";
+
+        const typeClass = {
           "のぞみ": "nozomi",
           "ひかり": "hikari",
-          "こだま": "kodama",
           "さくら": "sakura",
-          "みずほ": "mizuho"
-        }[t.type] || "");
+          "みずほ": "mizuho",
+          "こだま": "kodama",
+          "つばめ": "tsubame"
+        }[t.type] || "";
 
         row.innerHTML = `
-          <div>${t.type}</div>
+          <div class="${typeClass}">${t.type}</div>
           <div>${t.number}号</div>
-          <div>${t.time}</div>
-          <div>${t.destination}</div>
+          <div class="time">${t.time}</div>
+          <div class="${typeClass}">${t.destination}</div>
         `;
+
         board.appendChild(row);
       });
+
+      board.scrollTop = 0;
     })
     .catch(() => {
       board.innerHTML = "ダイヤを読み込めません";
     });
 }
 
+/* 自動スクロール */
+setInterval(() => {
+  board.scrollTop += 1;
+  if (board.scrollTop + board.clientHeight >= board.scrollHeight) {
+    board.scrollTop = 0;
+  }
+}, 40);
+
+/* 初回＆30秒更新 */
 loadTimetable();
 setInterval(loadTimetable, 30000);
 </script>
