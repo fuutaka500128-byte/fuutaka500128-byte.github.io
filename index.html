@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>新幹線 発車案内</title>
 
 <style>
 body {
@@ -28,37 +27,37 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* スクロール */
+/* スクロール本体 */
 .ticker {
   display: inline-flex;
   white-space: nowrap;
-  animation: scroll 36s linear infinite; /* ← 遅く */
+  animation: scroll 30s linear infinite; /* ゆっくり */
 }
 
 /* 1列車 */
 .item {
   display: inline-flex;
   align-items: center;
-  font-size: 23px;              /* 少し大きめ維持 */
-  margin-right: 32px;           /* ← 見切り短く */
+  font-size: 23px;
+  margin-right: 20px;   /* ← 見切り短く */
 }
 
 /* 種別色 */
-.nozomi { color: #FFD700; }
-.hikari { color: #FFFFFF; }
-.kodama { color: #3FA9F5; }
-.sakura { color: #FF69B4; }
-.mizuho { color: #FFA500; }
+.nozomi  { color: #FFD700; }
+.hikari  { color: #FFFFFF; }
+.kodama  { color: #3FA9F5; }
+.sakura  { color: #FF69B4; }
+.mizuho  { color: #FFA500; }
 .tsubame { color: #7FDBFF; }
 
 /* 時刻・行先は白 */
 .time,
 .dest {
   color: #FFFFFF;
-  margin-left: 14px;
+  margin-left: 12px;
 }
 
-/* スクロール定義 */
+/* スクロール定義（1回分） */
 @keyframes scroll {
   from { transform: translateX(100%); }
   to   { transform: translateX(-100%); }
@@ -104,18 +103,13 @@ function render() {
   filtered.forEach(t => {
     const div = document.createElement("div");
     div.className = `item ${t.type}`;
-
     div.innerHTML = `
-      <span class="name">${t.name}</span>
+      <span>${t.name}</span>
       <span class="time">${t.time}</span>
       <span class="dest">${t.dest}</span>
     `;
-
     ticker.appendChild(div);
   });
-
-  /* 無限スクロール用 */
-  ticker.innerHTML += ticker.innerHTML;
 }
 
 render();
