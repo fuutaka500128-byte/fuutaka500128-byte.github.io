@@ -1,0 +1,6 @@
+[
+  { "type": "のぞみ", "number": 3, "time": "21:58", "destination": "東京" },
+  { "type": "ひかり", "number": 594, "time": "22:10", "destination": "新大阪" },
+  { "type": "さくら", "number": 570, "time": "22:18", "destination": "鹿児島中央" },
+  { "type": "みずほ", "number": 612, "time": "22:30", "destination": "鹿児島中央" }
+]
