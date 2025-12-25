@@ -1,25 +1,100 @@
-<div class="ticker-content">
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>博多駅 新幹線 発車案内</title>
 
-  <!-- 上り -->
-  <span class="dest">東京</span>
-  <span class="time">06:00</span>
-  <span class="train nozomi">のぞみ1号</span>
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+}
 
-  <span class="dest">新大阪</span>
-  <span class="time">06:30</span>
-  <span class="train sakura">さくら401号</span>
+#board {
+  padding: 10px;
+  max-height: 100vh;
+  overflow-y: auto;
+}
 
-  <span class="dest">新大阪</span>
-  <span class="time">07:00</span>
-  <span class="train mizuho">みずほ601号</span>
+.row {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #333;
+  padding: 10px 0;
+  font-size: 22px;
+}
 
-  <!-- 下り -->
-  <span class="dest">鹿児島中央</span>
-  <span class="time">06:10</span>
-  <span class="train sakura">さくら401号</span>
+.train {
+  width: 110px;
+  font-weight: bold;
+}
 
-  <span class="dest">鹿児島中央</span>
-  <span class="time">06:45</span>
-  <span class="train tsubame">つばめ329号</span>
+.time {
+  width: 80px;
+  text-align: center;
+}
 
-</div>
+.dest {
+  flex: 1;
+  padding-left: 10px;
+}
+
+/* 列車色 */
+.nozomi { color: #FFD700; }
+.hikari { color: #FF3333; }
+.kodama { color: #3399FF; }
+.sakura { color: #FF66B2; }
+.mizuho { color: #FF9900; }
+.tsubame { color: #66CCFF; }
+</style>
+</head>
+
+<body>
+<div id="board"></div>
+
+<script>
+fetch("hakata_shinkansen_complete.json")
+  .then(res => res.json())
+  .then(data => {
+    const board = document.getElementById("board");
+
+    data.timetable.forEach(t => {
+      const row = document.createElement("div");
+      row.className = "row";
+
+      const train = document.createElement("div");
+      train.className = "train " + typeClass(t.type);
+      train.textContent = t.type + t.number + "号";
+
+      const time = document.createElement("div");
+      time.className = "time";
+      time.textContent = t.departure;
+
+      const dest = document.createElement("div");
+      dest.className = "dest";
+      dest.textContent = t.destination;
+
+      row.appendChild(train);
+      row.appendChild(time);
+      row.appendChild(dest);
+      board.appendChild(row);
+    });
+  });
+
+function typeClass(type) {
+  switch (type) {
+    case "のぞみ": return "nozomi";
+    case "ひかり": return "hikari";
+    case "こだま": return "kodama";
+    case "さくら": return "sakura";
+    case "みずほ": return "mizuho";
+    case "つばめ": return "tsubame";
+    default: return "";
+  }
+}
+</script>
+</body>
+</html>
