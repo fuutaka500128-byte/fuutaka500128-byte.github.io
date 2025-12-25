@@ -1,0 +1,1 @@
+# fuutaka500128-byte.github.io
