@@ -6,131 +6,119 @@
 <title>Shinkansen Ticker</title>
 
 <style>
-body {
-  margin: 0;
-  background: black;
-  overflow: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
-               "Meiryo", sans-serif;
-}
+  body {
+    margin: 0;
+    background: black;
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+                 "Yu Gothic", Meiryo, sans-serif;
+  }
 
-/* 表示エリア（赤枠相当） */
-#ticker-area {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 60px;
-  overflow: hidden;
-  background: black;
-  border-top: 2px solid #333;
-}
+  /* 下部表示エリア（赤枠想定） */
+  .ticker-area {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 56px;
+    overflow: hidden;
+    background: black;
+    border-top: 1px solid #333;
+  }
 
-/* 横スクロール */
-#ticker {
-  display: inline-flex;
-  align-items: center;
-  height: 100%;
-  white-space: nowrap;
-  animation: scroll-left 25s linear infinite;
-}
+  .ticker {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    animation: scroll-left 14s linear infinite;
+    padding-left: 100%;
+  }
 
-/* 1列車 */
-.train {
-  display: flex;
-  align-items: center;
-  margin-right: 60px;
-  font-size: 22px;
-}
+  .item {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 60px;
+    font-size: 20px;
+  }
 
-/* 種別カラー */
-.nozomi { color: yellow; }
-.hikari { color: red; }
-.kodama { color: dodgerblue; }
-.tsubame { color: deepskyblue; }
-.mizuho { color: orange; }
-.sakura { color: hotpink; }
+  .name { font-weight: bold; margin-right: 8px; }
+  .number { margin-right: 20px; font-weight: bold; }
+  .time { margin-right: 20px; }
+  .dest { margin-right: 20px; }
 
-/* 時刻・行先 */
-.time, .dest {
-  color: white;
-  margin-left: 20px;
-}
+  /* 色指定 */
+  .nozomi { color: #ffd400; }
+  .hikari { color: #ff3b3b; }
+  .sakura { color: #ff77b7; }
+  .mizuho { color: #ff9f1a; }
+  .kodama { color: #3b82ff; }
+  .tsubame { color: #5fd7ff; }
 
-/* 右 → 左 */
-@keyframes scroll-left {
-  from { transform: translateX(100%); }
-  to   { transform: translateX(-100%); }
-}
+  @keyframes scroll-left {
+    from { transform: translateX(0%); }
+    to   { transform: translateX(-120%); }
+  }
 </style>
 </head>
 
 <body>
 
-<div id="ticker-area">
-  <div id="ticker">
-
-    <div class="train nozomi" data-time="21:45">
-      のぞみ 12号
-      <span class="time">21:45</span>
-      <span class="dest">東京</span>
-    </div>
-
-    <div class="train sakura" data-time="22:05">
-      さくら 563号
-      <span class="time">22:05</span>
-      <span class="dest">鹿児島中央</span>
-    </div>
-
-    <div class="train mizuho" data-time="22:30">
-      みずほ 612号
-      <span class="time">22:30</span>
-      <span class="dest">鹿児島中央</span>
-    </div>
-
-    <div class="train kodama" data-time="22:42">
-      こだま 856号
-      <span class="time">22:42</span>
-      <span class="dest">博多</span>
-    </div>
-
-    <div class="train tsubame" data-time="22:55">
-      つばめ 321号
-      <span class="time">22:55</span>
-      <span class="dest">鹿児島中央</span>
-    </div>
-
-    <div class="train hikari" data-time="23:10">
-      ひかり 594号
-      <span class="time">23:10</span>
-      <span class="dest">新大阪</span>
-    </div>
-
-  </div>
+<div class="ticker-area">
+  <div id="ticker" class="ticker"></div>
 </div>
 
 <script>
-function updateTrains() {
+const trains = [
+  { name: "みずほ", class: "mizuho", number: "612号", time: "22:30", dest: "鹿児島中央" },
+  { name: "こだま", class: "kodama", number: "856号", time: "22:42", dest: "博多" },
+  { name: "つばめ", class: "tsubame", number: "321号", time: "22:55", dest: "鹿児島中央" },
+  { name: "のぞみ", class: "nozomi", number: "98号", time: "23:05", dest: "東京" },
+  { name: "さくら", class: "sakura", number: "570号", time: "23:12", dest: "鹿児島中央" }
+];
+
+function getNowMinutes() {
   const now = new Date();
-  const nowMinutes = now.getHours() * 60 + now.getMinutes();
-
-  document.querySelectorAll('.train').forEach(train => {
-    const time = train.dataset.time;
-    const [h, m] = time.split(':').map(Number);
-    const trainMinutes = h * 60 + m;
-
-    if (trainMinutes <= nowMinutes) {
-      train.style.display = 'none';
-    } else {
-      train.style.display = 'flex';
-    }
-  });
+  return now.getHours() * 60 + now.getMinutes();
 }
 
-// 初回実行
-updateTrains();
+function timeToMinutes(t) {
+  const [h, m] = t.split(":").map(Number);
+  return h * 60 + m;
+}
 
-// 1分ごとに更新
-setInterval(updateTrains, 60000);
+function renderTicker() {
+  const ticker = document.getElementById("ticker");
+  ticker.innerHTML = "";
+
+  const now = getNowMinutes();
+
+  const active = trains
+    .filter(t => timeToMinutes(t.time) >= now)
+    .sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
+
+  active.forEach(t => {
+    const div = document.createElement("div");
+    div.className = "item";
+
+    div.innerHTML = `
+      <span class="name ${t.class}">${t.name}</span>
+      <span class="number ${t.class}">${t.number}</span>
+      <span class="time">${t.time}</span>
+      <span class="dest">${t.dest}</span>
+    `;
+
+    ticker.appendChild(div);
+  });
+
+  /* 中身が無い時はスクロール停止 */
+  if (active.length === 0) {
+    ticker.style.animation = "none";
+  } else {
+    ticker.style.animation = "scroll-left 14s linear infinite";
+  }
+}
+
+renderTicker();
+setInterval(renderTicker, 60000); // 1分ごとに更新
 </script>
 
 </body>
