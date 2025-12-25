@@ -3,85 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shinkansen Ticker</title>
+<title>新幹線 発車案内</title>
 
 <style>
-  body {
-    margin: 0;
-    background: black;
-    color: white;
-    font-family: -apple-system, BlinkMacSystemFont,
-      "Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
-  }
+body {
+  margin: 0;
+  background: black;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+               "Yu Gothic", Meiryo, sans-serif;
+}
 
-  .ticker-area {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 48px;
-    overflow: hidden;
-    background: black;
-    border-top: 1px solid #333;
-    display: flex;
-    align-items: center;
-  }
+/* 表示エリア（下1段のみ） */
+.ticker-area {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 52px;
+  background: black;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding-bottom: env(safe-area-inset-bottom);
+}
 
-  .ticker {
-    display: inline-flex;
-    align-items: center;
-    white-space: nowrap;
-    padding-left: 60%;
-    animation: scroll-left 22s linear infinite;
-  }
+/* スクロール本体 */
+.ticker {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: scroll 28s linear infinite;
+}
 
-  .item {
-    display: inline-flex;
-    align-items: center;
-    margin-right: 48px;
-    font-size: 19px;
-    line-height: 1;
-  }
+/* 1列車分 */
+.item {
+  display: inline-flex;
+  align-items: center;
+  font-size: 22px;
+  margin-right: 48px; /* 見切り間 */
+}
 
-  .name { font-weight: 700; margin-right: 6px; }
-  .number { margin-right: 14px; font-weight: 700; }
-  .time { margin-right: 14px; }
-  .dest { margin-right: 14px; }
+/* 色定義 */
+.nozomi { color: #FFD700; }   /* 黄色 */
+.hikari { color: #FFFFFF; }
+.kodama { color: #3FA9F5; }   /* 青 */
+.sakura { color: #FF69B4; }   /* ピンク */
+.mizuho { color: #FFA500; }
+.tsubame { color: #7FDBFF; }
 
-  .nozomi { color: #FFD400; }
-  .hikari { color: #FF3B3B; }
-  .sakura { color: #FF6FAE; }
-  .mizuho { color: #FFA500; }
-  .kodama { color: #3B82F6; }
-  .tsubame { color: #4FD1C5; }
-
-  @keyframes scroll-left {
-    from { transform: translateX(0%); }
-    to   { transform: translateX(-105%); }
-  }
+/* スクロール */
+@keyframes scroll {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(-100%); }
+}
 </style>
 </head>
 
 <body>
 
 <div class="ticker-area">
-  <div id="ticker" class="ticker"></div>
+  <div class="ticker" id="ticker"></div>
 </div>
 
 <script>
 const trains = [
-  { name: "みずほ", class: "mizuho", number: "612号", time: "22:30", dest: "鹿児島中央" },
-  { name: "こだま", class: "kodama", number: "856号", time: "22:42", dest: "博多" },
-  { name: "つばめ", class: "tsubame", number: "321号", time: "22:55", dest: "鹿児島中央" },
-  { name: "のぞみ", class: "nozomi", number: "98号", time: "23:05", dest: "東京" },
-  { name: "さくら", class: "sakura", number: "570号", time: "23:12", dest: "鹿児島中央" }
+  { type:"kodama",  name:"こだま 856号", time:"22:42", dest:"博多" },
+  { type:"mizuho",  name:"みずほ 612号", time:"22:30", dest:"鹿児島中央" },
+  { type:"nozomi",  name:"のぞみ 98号",  time:"21:50", dest:"東京" },
+  { type:"sakura",  name:"さくら 410号", time:"22:10", dest:"鹿児島中央" },
+  { type:"tsubame", name:"つばめ 318号", time:"21:55", dest:"熊本" }
 ];
 
 function nowMinutes() {
   const d = new Date();
   return d.getHours() * 60 + d.getMinutes();
 }
+
 function toMinutes(t) {
-  const [h, m] = t.split(":").map(Number);
+  const [h,m] = t.split(":").map(Number);
   return h * 60 + m;
 }
 
@@ -89,28 +88,25 @@ function render() {
   const ticker = document.getElementById("ticker");
   ticker.innerHTML = "";
 
-  const now = nowMinutes();
-  const list = trains
-    .filter(t => toMinutes(t.time) >= now)
+  const current = nowMinutes();
+
+  const filtered = trains
+    .filter(t => toMinutes(t.time) >= current)
     .sort((a,b) => toMinutes(a.time) - toMinutes(b.time));
 
-  if (list.length === 0) return; // 列車ゼロは黒画面
-
-  list.forEach(t => {
-    const el = document.createElement("div");
-    el.className = "item";
-    el.innerHTML = `
-      <span class="name ${t.class}">${t.name}</span>
-      <span class="number ${t.class}">${t.number}</span>
-      <span class="time">${t.time}</span>
-      <span class="dest">${t.dest}</span>
-    `;
-    ticker.appendChild(el);
+  filtered.forEach(t => {
+    const div = document.createElement("div");
+    div.className = `item ${t.type}`;
+    div.textContent = `${t.name}　${t.time}　${t.dest}`;
+    ticker.appendChild(div);
   });
+
+  /* 無限スクロール用に複製 */
+  ticker.innerHTML += ticker.innerHTML;
 }
 
 render();
-setInterval(render, 60000);
+setInterval(render, 60000); // 1分ごと更新
 </script>
 
 </body>
