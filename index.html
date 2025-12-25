@@ -6,57 +6,82 @@
 <title>博多駅 新幹線 発車案内</title>
 
 <style>
-html, body {
+body {
   margin: 0;
-  padding: 0;
   background: black;
   color: white;
-  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
-               "Yu Gothic", Meiryo, sans-serif;
-  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", sans-serif;
   overflow: hidden;
 }
 
 /* タイトル */
 header {
   text-align: center;
-  padding: 16px 0;
   font-size: 22px;
-  font-weight: bold;
+  padding: 16px 0;
+  border-bottom: 1px solid #333;
 }
 
-/* スクロール領域 */
+/* スクロールエリア */
 #scroll-area {
-  height: calc(100vh - 60px);
-  overflow-y: auto;
+  height: calc(100vh - 96px);
+  overflow: hidden;
+}
+
+#list {
+  animation: scroll-up 20s linear infinite;
+}
+
+@keyframes scroll-up {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
 }
 
 /* 行 */
-.row {
+.train {
   display: grid;
-  grid-template-columns: 90px 80px 70px 1fr;
-  align-items: center;
-  padding: 10px 14px;
+  grid-template-columns: 1.2fr 1fr 1fr 1.6fr;
+  padding: 14px 12px;
   border-bottom: 1px solid #333;
   font-size: 18px;
 }
 
-/* 文字 */
-.train, .number {
-  font-weight: bold;
-}
+/* 色 */
+.nozomi { color: #ffd700; }
+.hikari { color: #ff4444; }
+.mizuho { color: #ff9900; }
+.sakura { color: #ff66cc; }
+.kodama { color: #3399ff; }
+.tsubame { color: #66ffff; }
 
 .time, .dest {
   color: white;
 }
 
-/* 色指定 */
-.nozomi  { color: #ffd400; }
-.hikari  { color: #ff3b3b; }
-.kodama  { color: #2979ff; }
-.sakura  { color: #ff8ad8; }
-.mizuho  { color: #ff9800; }
-.tsubame { color: #4fc3f7; }
+/* 下部テロップ */
+#ticker {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 36px;
+  background: black;
+  border-top: 1px solid #333;
+  overflow: hidden;
+}
+
+#ticker-text {
+  white-space: nowrap;
+  display: inline-block;
+  padding-left: 100%;
+  line-height: 36px;
+  color: #00ff99;
+  animation: ticker 18s linear infinite;
+}
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
 </style>
 </head>
 
@@ -65,85 +90,72 @@ header {
 <header>博多駅 新幹線 発車案内</header>
 
 <div id="scroll-area">
+  <div id="list">
 
-  <div class="row" data-time="21:58">
-    <div class="train nozomi">のぞみ</div>
-    <div class="number nozomi">3号</div>
-    <div class="time">21:58</div>
-    <div class="dest">東京</div>
+    <div class="train mizuho" data-time="22:30">
+      <div>みずほ</div><div>612号</div>
+      <div class="time">22:30</div>
+      <div class="dest">鹿児島中央</div>
+    </div>
+
+    <div class="train kodama" data-time="22:42">
+      <div>こだま</div><div>856号</div>
+      <div class="time">22:42</div>
+      <div class="dest">博多</div>
+    </div>
+
+    <div class="train tsubame" data-time="22:55">
+      <div>つばめ</div><div>321号</div>
+      <div class="time">22:55</div>
+      <div class="dest">鹿児島中央</div>
+    </div>
+
+    <!-- 無限スクロール用コピー -->
+    <div class="train mizuho" data-time="22:30">
+      <div>みずほ</div><div>612号</div>
+      <div class="time">22:30</div>
+      <div class="dest">鹿児島中央</div>
+    </div>
+
+    <div class="train kodama" data-time="22:42">
+      <div>こだま</div><div>856号</div>
+      <div class="time">22:42</div>
+      <div class="dest">博多</div>
+    </div>
+
+    <div class="train tsubame" data-time="22:55">
+      <div>つばめ</div><div>321号</div>
+      <div class="time">22:55</div>
+      <div class="dest">鹿児島中央</div>
+    </div>
+
   </div>
+</div>
 
-  <div class="row" data-time="22:10">
-    <div class="train hikari">ひかり</div>
-    <div class="number hikari">594号</div>
-    <div class="time">22:10</div>
-    <div class="dest">新大阪</div>
+<!-- 下部テロップ -->
+<div id="ticker">
+  <div id="ticker-text">
+    ★ 新幹線をご利用くださいましてありがとうございます。発車時刻にご注意ください ★
   </div>
-
-  <div class="row" data-time="22:18">
-    <div class="train sakura">さくら</div>
-    <div class="number sakura">570号</div>
-    <div class="time">22:18</div>
-    <div class="dest">鹿児島中央</div>
-  </div>
-
-  <div class="row" data-time="22:30">
-    <div class="train mizuho">みずほ</div>
-    <div class="number mizuho">612号</div>
-    <div class="time">22:30</div>
-    <div class="dest">鹿児島中央</div>
-  </div>
-
-  <div class="row" data-time="22:42">
-    <div class="train kodama">こだま</div>
-    <div class="number kodama">856号</div>
-    <div class="time">22:42</div>
-    <div class="dest">博多</div>
-  </div>
-
-  <div class="row" data-time="22:55">
-    <div class="train tsubame">つばめ</div>
-    <div class="number tsubame">321号</div>
-    <div class="time">22:55</div>
-    <div class="dest">鹿児島中央</div>
-  </div>
-
 </div>
 
 <script>
-/* ===== 自動スクロール ===== */
-const area = document.getElementById("scroll-area");
-let direction = 1;
-
-setInterval(() => {
-  area.scrollTop += direction;
-
-  if (area.scrollTop + area.clientHeight >= area.scrollHeight) {
-    direction = -1;
-  }
-  if (area.scrollTop <= 0) {
-    direction = 1;
-  }
-}, 40);
-
-/* ===== 時刻を過ぎたら削除 ===== */
-function checkTime() {
+function removeExpired() {
   const now = new Date();
-  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
 
-  document.querySelectorAll(".row").forEach(row => {
-    const t = row.dataset.time;
+  document.querySelectorAll(".train").forEach(train => {
+    const t = train.dataset.time;
     const [h, m] = t.split(":").map(Number);
-    const trainMinutes = h * 60 + m;
-
-    if (nowMinutes > trainMinutes) {
-      row.remove();
+    const trainMin = h * 60 + m;
+    if (trainMin < nowMin) {
+      train.remove();
     }
   });
 }
 
-setInterval(checkTime, 60000);
-checkTime();
+setInterval(removeExpired, 60000);
+removeExpired();
 </script>
 
 </body>
