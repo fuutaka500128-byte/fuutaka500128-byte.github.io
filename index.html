@@ -3,67 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>博多駅 新幹線 発車標</title>
+<title>博多駅 新幹線 電光掲示</title>
 
 <style>
 body {
   margin: 0;
+  background: #fff; /* 上は白でOK */
+  height: 200vh;    /* スクロール確認用 */
+}
+
+/* 下部固定バー */
+.ticker {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   background: #000;
-  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-}
-
-.board {
-  max-width: 420px;
-  margin: 0 auto;
-}
-
-/* 1列車 */
-.train {
-  padding: 14px 16px;
-  border-bottom: 1px solid #222;
-}
-
-/* 上段：時刻＋列車名 */
-.top {
+  overflow: hidden;
+  height: 64px;
   display: flex;
-  gap: 14px;
-  align-items: baseline;
+  align-items: center;
+}
+
+/* 流れる中身 */
+.ticker-content {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: ticker 18s linear infinite;
+  font-family: "Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  font-size: 26px;
+}
+
+/* 色設定 */
+.dest {
+  color: #ffffff;
+  margin-right: 40px;
 }
 
 .time {
-  color: #fff;
-  font-size: 26px;
-  min-width: 70px;
+  color: #ffffff;
+  margin-right: 16px;
 }
 
-.name {
+.train {
   color: #ffcc33;
-  font-size: 26px;
   font-weight: bold;
+  margin-right: 80px;
 }
 
-/* 下段：行先 */
-.bottom {
-  margin-top: 6px;
-  font-size: 20px;
-  color: #fff;
-  overflow: hidden;
-  white-space: nowrap;
-  position: relative;
-}
-
-/* 行先スクロール */
-.scroll {
-  display: inline-block;
-  padding-left: 100%;
-  animation: scroll-left 14s linear infinite;
-}
-
-.scroll span {
-  padding-right: 60px;
-}
-
-@keyframes scroll-left {
+/* アニメーション */
+@keyframes ticker {
   0% { transform: translateX(0); }
   100% { transform: translateX(-100%); }
 }
@@ -71,56 +61,22 @@ body {
 </head>
 
 <body>
-<div class="board">
 
-  <div class="train">
-    <div class="top">
-      <div class="time">06:00</div>
-      <div class="name">のぞみ1号</div>
-    </div>
-    <div class="bottom">
-      <div class="scroll">
-        <span>東京</span>
-      </div>
-    </div>
+<div class="ticker">
+  <div class="ticker-content">
+    <span class="dest">鹿児島中央</span>
+    <span class="time">10:45</span>
+    <span class="train">みずほ601号</span>
+
+    <span class="dest">新大阪</span>
+    <span class="time">11:00</span>
+    <span class="train">のぞみ12号</span>
+
+    <span class="dest">東京</span>
+    <span class="time">11:30</span>
+    <span class="train">のぞみ18号</span>
   </div>
-
-  <div class="train">
-    <div class="top">
-      <div class="time">06:30</div>
-      <div class="name">さくら401号</div>
-    </div>
-    <div class="bottom">
-      <div class="scroll">
-        <span>鹿児島中央</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="train">
-    <div class="top">
-      <div class="time">07:00</div>
-      <div class="name">みずほ601号</div>
-    </div>
-    <div class="bottom">
-      <div class="scroll">
-        <span>鹿児島中央</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="train">
-    <div class="top">
-      <div class="time">07:30</div>
-      <div class="name">のぞみ5号</div>
-    </div>
-    <div class="bottom">
-      <div class="scroll">
-        <span>新大阪</span>
-      </div>
-    </div>
-  </div>
-
 </div>
+
 </body>
 </html>
