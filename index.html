@@ -3,122 +3,124 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>博多駅 新幹線 発車案内</title>
+<title>博多駅 新幹線 発車標</title>
 
 <style>
 body {
   margin: 0;
-  background: #fff;
-  font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+  background: #000;
+  font-family: "Helvetica Neue", Arial, sans-serif;
 }
 
 /* 表示エリア */
-.ticker {
+#board {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background: black;
-  overflow: hidden;
-  padding: 10px 0;
-}
-
-/* 流れる本体 */
-.track {
-  display: inline-block;
-  white-space: nowrap;
-  animation: scroll 35s linear infinite;
+  background: #000;
+  padding: 12px 16px;
+  box-sizing: border-box;
 }
 
 /* 1列車 */
 .train {
-  display: inline-block;
-  margin-right: 100px;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #222;
+  padding: 6px 0;
 }
 
 /* 上段 */
 .top {
-  font-size: 26px;
-  line-height: 1.2;
-  color: white;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
 }
 
 /* 下段 */
 .bottom {
-  font-size: 30px;
-  line-height: 1.2;
-  margin-top: 2px;
-  color: white;
-  font-weight: bold;
+  margin-left: 58px;
+  font-size: 22px;
+  color: #fff;
+  letter-spacing: 1px;
 }
 
-/* 種別色（列車名のみ） */
-.nozomi  { color: yellow; }
-.hikari  { color: red; }
-.kodama  { color: deepskyblue; }
-.mizuho  { color: orange; }
-.sakura  { color: pink; }
-.tsubame { color: lightblue; }
+/* 時刻 */
+.time {
+  font-size: 26px;
+  color: #fff;
+  width: 60px;
+}
 
-/* スクロール */
-@keyframes scroll {
-  from { transform: translateX(100%); }
-  to   { transform: translateX(-100%); }
+/* 列車名 */
+.name {
+  font-size: 26px;
+  color: #ffd000;
+  white-space: nowrap;
 }
 </style>
 </head>
 
 <body>
 
-<div class="ticker">
-  <div class="track" id="track"></div>
-</div>
+<div id="board"></div>
 
 <script>
-/* ==========================
-   博多駅 新幹線 全ダイヤ（例）
-   ※ここを公式時刻表で増やす
-========================== */
+/* ===== 博多駅 新幹線 ダイヤ（例）===== */
+/* ここに増やすだけでOK */
 const timetable = [
-  { time:"06:00", name:"のぞみ1号",  type:"nozomi",  dest:"東京" },
-  { time:"06:10", name:"さくら401号", type:"sakura", dest:"鹿児島中央" },
-  { time:"06:30", name:"みずほ601号", type:"mizuho", dest:"鹿児島中央" },
-  { time:"06:45", name:"ひかり512号", type:"hikari", dest:"新大阪" },
-  { time:"07:00", name:"こだま715号", type:"kodama", dest:"新大阪" },
-  { time:"07:12", name:"のぞみ3号",   type:"nozomi",  dest:"東京" },
-  { time:"07:30", name:"さくら403号", type:"sakura", dest:"鹿児島中央" },
-  { time:"07:45", name:"ひかり514号", type:"hikari", dest:"新大阪" }
-  // ← ここに全列車を追加
+  { time: "06:00", name: "のぞみ1号", dest: "東京" },
+  { time: "06:30", name: "さくら401号", dest: "鹿児島中央" },
+  { time: "07:00", name: "みずほ601号", dest: "鹿児島中央" },
+  { time: "07:30", name: "のぞみ5号", dest: "新大阪" },
+  { time: "08:00", name: "さくら403号", dest: "鹿児島中央" },
+  { time: "08:30", name: "のぞみ9号", dest: "東京" },
+  { time: "09:00", name: "みずほ603号", dest: "鹿児島中央" },
+  { time: "09:30", name: "のぞみ13号", dest: "新大阪" },
+  { time: "10:00", name: "さくら405号", dest: "鹿児島中央" },
+  { time: "10:30", name: "のぞみ17号", dest: "東京" }
 ];
 
-/* ===== 現在時刻以降を抽出 ===== */
-function getNextTrains(count = 6) {
+/* ===== 次発取得（白画面防止）===== */
+function getNextTrains(count = 5) {
   const now = new Date();
   const nowMin = now.getHours() * 60 + now.getMinutes();
 
-  return timetable.filter(t => {
+  const future = timetable.filter(t => {
     const [h,m] = t.time.split(":").map(Number);
     return (h*60 + m) >= nowMin;
-  }).slice(0, count);
+  });
+
+  return future.length > 0 ? future.slice(0, count)
+                           : timetable.slice(0, count);
 }
 
-/* ===== 表示 ===== */
-const track = document.getElementById("track");
-const nextTrains = getNextTrains(6);
+/* ===== 描画 ===== */
+function render() {
+  const board = document.getElementById("board");
+  board.innerHTML = "";
 
-nextTrains.forEach(t => {
-  const div = document.createElement("div");
-  div.className = "train";
+  const trains = getNextTrains();
 
-  div.innerHTML = `
-    <div class="top">
-      <span>${t.time}</span>
-      <span class="${t.type}">${t.name}</span>
-    </div>
-    <div class="bottom">${t.dest}</div>
-  `;
+  trains.forEach(t => {
+    const row = document.createElement("div");
+    row.className = "train";
 
-  track.appendChild(div);
-});
+    row.innerHTML = `
+      <div class="top">
+        <div class="time">${t.time}</div>
+        <div class="name">${t.name}</div>
+      </div>
+      <div class="bottom">${t.dest}</div>
+    `;
+
+    board.appendChild(row);
+  });
+}
+
+/* 初期表示＋1分更新 */
+render();
+setInterval(render, 60000);
 </script>
 
 </body>
