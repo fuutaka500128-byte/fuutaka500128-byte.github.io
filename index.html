@@ -10,11 +10,11 @@
     margin: 0;
     background: black;
     color: white;
-    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
-                 "Yu Gothic", Meiryo, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont,
+      "Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
   }
 
-  /* 下部表示エリア（赤枠想定） */
+  /* 下部表示エリア */
   .ticker-area {
     position: fixed;
     bottom: 0;
@@ -23,40 +23,42 @@
     overflow: hidden;
     background: black;
     border-top: 1px solid #333;
+    display: flex;
+    align-items: center; /* 完全中央 */
   }
 
   .ticker {
     display: inline-flex;
     align-items: center;
     white-space: nowrap;
-    padding-left: 60%;
-    animation: scroll-left 18s linear infinite;
+    padding-left: 45%;
+    animation: scroll-left 22s linear infinite;
   }
 
   .item {
     display: inline-flex;
     align-items: center;
-    margin-right: 48px;
-    font-size: 18px;
+    margin-right: 40px;
+    font-size: 19px;
     line-height: 1;
   }
 
-  .name { font-weight: bold; margin-right: 6px; }
-  .number { margin-right: 16px; font-weight: bold; }
-  .time { margin-right: 16px; }
-  .dest { margin-right: 16px; }
+  .name { font-weight: 700; margin-right: 6px; }
+  .number { margin-right: 14px; font-weight: 700; }
+  .time { margin-right: 14px; }
+  .dest { margin-right: 14px; }
 
-  /* 色指定 */
-  .nozomi { color: #ffd400; }
-  .hikari { color: #ff3b3b; }
-  .sakura { color: #ff77b7; }
-  .mizuho { color: #ff9f1a; }
-  .kodama { color: #3b82ff; }
-  .tsubame { color: #5fd7ff; }
+  /* 色 */
+  .nozomi { color: #FFD400; }
+  .hikari { color: #FF3B3B; }
+  .sakura { color: #FF6FAE; }
+  .mizuho { color: #FFA500; }
+  .kodama { color: #3B82F6; }
+  .tsubame { color: #4FD1C5; }
 
   @keyframes scroll-left {
     from { transform: translateX(0%); }
-    to   { transform: translateX(-100%); }
+    to   { transform: translateX(-92%); }
   }
 </style>
 </head>
@@ -76,44 +78,42 @@ const trains = [
   { name: "さくら", class: "sakura", number: "570号", time: "23:12", dest: "鹿児島中央" }
 ];
 
-function getNowMinutes() {
-  const now = new Date();
-  return now.getHours() * 60 + now.getMinutes();
+function nowMinutes() {
+  const d = new Date();
+  return d.getHours() * 60 + d.getMinutes();
 }
-
-function timeToMinutes(t) {
+function toMinutes(t) {
   const [h, m] = t.split(":").map(Number);
   return h * 60 + m;
 }
 
-function renderTicker() {
+function render() {
   const ticker = document.getElementById("ticker");
   ticker.innerHTML = "";
 
-  const now = getNowMinutes();
+  const now = nowMinutes();
+  const list = trains
+    .filter(t => toMinutes(t.time) >= now)
+    .sort((a,b) => toMinutes(a.time) - toMinutes(b.time));
 
-  const active = trains
-    .filter(t => timeToMinutes(t.time) >= now)
-    .sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
-
-  active.forEach(t => {
-    const div = document.createElement("div");
-    div.className = "item";
-    div.innerHTML = `
+  list.forEach(t => {
+    const el = document.createElement("div");
+    el.className = "item";
+    el.innerHTML = `
       <span class="name ${t.class}">${t.name}</span>
       <span class="number ${t.class}">${t.number}</span>
       <span class="time">${t.time}</span>
       <span class="dest">${t.dest}</span>
     `;
-    ticker.appendChild(div);
+    ticker.appendChild(el);
   });
 
   ticker.style.animation =
-    active.length === 0 ? "none" : "scroll-left 18s linear infinite";
+    list.length <= 2 ? "none" : "scroll-left 22s linear infinite";
 }
 
-renderTicker();
-setInterval(renderTicker, 60000);
+render();
+setInterval(render, 60000);
 </script>
 
 </body>
