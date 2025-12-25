@@ -3,52 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>新幹線電光掲示板</title>
+
+<title>新幹線 発車案内</title>
 
 <style>
+/* ===== 全体 ===== */
 body {
   margin: 0;
   background: white;
+  font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
 }
 
+/* ===== 下部電光掲示 ===== */
 .ticker {
-  font-family: "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
-  font-weight: 600;
   position: fixed;
   bottom: 0;
   width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
   background: black;
-  font-size: 28px;
-  padding: 10px 0;
-}
-
-.ticker span {
-  display: inline-block;
+  overflow: hidden;
   white-space: nowrap;
-  animation: scroll 20s linear infinite;
+  padding: 12px 0;
+  box-sizing: border-box;
 }
 
-@keyframes scroll {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
+/* ===== 流れる本体 ===== */
+.ticker-track {
+  display: inline-block;
+  padding-left: 100%;
+  animation: scroll 30s linear infinite;
 }
 
-/* 種別ごとの色 */
+/* ===== 各列車 ===== */
+.train {
+  display: inline-block;
+  margin-right: 60px;
+  font-size: 28px;
+  line-height: 1.4;
+}
+
+/* ===== 色分け ===== */
 .nozomi { color: yellow; }
 .hikari { color: red; }
-.kodama { color: blue; }
-.sakura { color: pink; }
+.kodama { color: deepskyblue; }
 .mizuho { color: orange; }
+.sakura { color: pink; }
 .tsubame { color: lightblue; }
 
+/* ===== スクロール ===== */
 @keyframes scroll {
-  0% { transform: translateX(0); }
+  0%   { transform: translateX(0); }
   100% { transform: translateX(-100%); }
 }
 </style>
@@ -57,17 +60,14 @@ body {
 <body>
 
 <div class="ticker">
-  <span class="nozomi">のぞみ3号 東京 10:03</span>
-  |
-  <span class="hikari">ひかり512号 新大阪 10:12</span>
-  |
-  <span class="kodama">こだま715号 新大阪 10:25</span>
-  |
-  <span class="sakura">さくら401号 鹿児島中央 10:33</span>
-  |
-  <span class="mizuho">みずほ601号 鹿児島中央 10:45</span>
-  |
-  <span class="tsubame">つばめ329号 熊本 10:58</span>
+  <div class="ticker-track">
+    <span class="train nozomi">10:03 のぞみ3号　東京</span>
+    <span class="train hikari">10:12 ひかり512号　新大阪</span>
+    <span class="train kodama">10:25 こだま715号　新大阪</span>
+    <span class="train sakura">10:33 さくら401号　鹿児島中央</span>
+    <span class="train mizuho">10:45 みずほ601号　鹿児島中央</span>
+    <span class="train tsubame">10:58 つばめ329号　熊本</span>
+  </div>
 </div>
 
 </body>
