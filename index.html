@@ -3,62 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>新幹線発車案内</title>
+<title>新幹線 発車案内</title>
 
 <style>
 body {
   margin: 0;
   background: black;
-  overflow: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", sans-serif;
 }
 
-/* 下部固定エリア */
 #ticker {
   position: fixed;
   bottom: 0;
-  left: 0;
   width: 100%;
-  height: 56px;
+  height: 40px;
   background: black;
   overflow: hidden;
-  border-top: 1px solid #333;
 }
 
-/* スクロール本体 */
 #ticker-inner {
   display: inline-flex;
   align-items: center;
+  height: 100%;
   white-space: nowrap;
   padding-left: 100%;
   animation: scroll 35s linear infinite;
 }
 
-/* 各列車 */
 .train {
   display: inline-flex;
   align-items: center;
-  margin-right: 8px; /* 見切り 8px */
-  font-size: 20px;
+  height: 100%;
+  margin-right: 8px;      /* 駅表示風の詰め */
+  font-size: 22px;
+  line-height: 1;
 }
 
-/* 色定義 */
-.nozomi { color: #ffd800; }
-.hikari { color: #ff3b3b; }
-.sakura { color: #ff6fae; }
-.mizuho { color: #ff9f1c; }
-.kodama { color: #3a7bff; }
-.tsubame { color: #4fdfff; }
+/* 種別色 */
+.nozomi { color: #FFD400; }
+.mizuho { color: #FF9900; }
+.sakura { color: #FF66B2; }
+.hikari { color: #FFFFFF; }
+.kodama { color: #4DA6FF; }
+.tsubame { color: #66FFFF; }
 
 .time, .dest {
-  color: white;
-  margin-left: 14px;
+  color: #FFFFFF;
+  margin-left: 8px;
 }
 
-/* アニメーション */
 @keyframes scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
 }
 </style>
 </head>
@@ -71,16 +68,15 @@ body {
 
 <script>
 const trains = [
-  { type:"mizuho", name:"みずほ", no:"612号", time:"22:30", dest:"鹿児島中央" },
-  { type:"kodama", name:"こだま", no:"856号", time:"22:42", dest:"博多" },
-  { type:"tsubame", name:"つばめ", no:"321号", time:"22:55", dest:"鹿児島中央" },
-  { type:"nozomi", name:"のぞみ", no:"48号", time:"23:10", dest:"東京" },
-  { type:"sakura", name:"さくら", no:"570号", time:"23:18", dest:"鹿児島中央" }
+  { type: "みずほ", cls: "mizuho", no: "612号", time: "22:30", dest: "鹿児島中央" },
+  { type: "こだま", cls: "kodama", no: "856号", time: "22:42", dest: "博多" },
+  { type: "さくら", cls: "sakura", no: "564号", time: "22:54", dest: "新大阪" },
+  { type: "のぞみ", cls: "nozomi", no: "98号", time: "23:06", dest: "東京" }
 ];
 
-function currentMinutes() {
-  const now = new Date();
-  return now.getHours() * 60 + now.getMinutes();
+function nowMinutes() {
+  const d = new Date();
+  return d.getHours() * 60 + d.getMinutes();
 }
 
 function timeToMinutes(t) {
@@ -88,28 +84,17 @@ function timeToMinutes(t) {
   return h * 60 + m;
 }
 
-function render() {
-  const now = currentMinutes();
-  const inner = document.getElementById("ticker-inner");
-  inner.innerHTML = "";
+const container = document.getElementById("ticker-inner");
+container.innerHTML = "";
 
-  trains
-    .filter(t => timeToMinutes(t.time) >= now)
-    .forEach(t => {
-      const el = document.createElement("div");
-      el.className = `train ${t.type}`;
-      el.innerHTML = `
-        <span>${t.name} ${t.no}</span>
-        <span class="time">${t.time}</span>
-        <span class="dest">${t.dest}</span>
-      `;
-      inner.appendChild(el);
-    });
-}
-
-render();
-setInterval(render, 60000);
-</script>
-
-</body>
-</html>
+trains
+  .filter(t => timeToMinutes(t.time) >= nowMinutes())
+  .forEach(t => {
+    const el = document.createElement("div");
+    el.className = "train";
+    el.innerHTML = `
+      <span class="${t.cls}">${t.type} ${t.no}</span>
+      <span class="time">${t.time}</span>
+      <span class="dest">${t.dest}</span>
+    `;
+    container
