@@ -2,21 +2,19 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<title>博多駅 新幹線発車案内</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>博多駅 新幹線 発車案内</title>
 
 <style>
 body {
   margin: 0;
-  background: #000;
-  color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  background: black;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
 }
 
 #board {
-  padding: 12px;
-  height: 100vh;
-  overflow-y: auto;
+  padding: 10px;
 }
 
 .row {
@@ -26,32 +24,33 @@ body {
 
 .top {
   display: flex;
-  gap: 14px;
-  align-items: baseline;
+  justify-content: space-between;
+  align-items: center;
   font-size: 22px;
+}
+
+.time {
+  color: white;
+  min-width: 70px;
 }
 
 .train {
   font-weight: bold;
 }
 
-.time {
-  color: white;
-}
+/* 列車色 */
+.nozomi { color: yellow; }
+.hikari { color: red; }
+.kodama { color: dodgerblue; }
+.sakura { color: pink; }
+.mizuho { color: orange; }
+.tsubame { color: lightblue; }
 
 .dest {
-  font-size: 20px;
+  font-size: 18px;
   color: white;
-  margin-top: 2px;
+  margin-top: 4px;
 }
-
-/* 列車種別 色 */
-.nozomi { color: #FFD700; }
-.hikari { color: #FF3333; }
-.kodama { color: #3399FF; }
-.sakura { color: #FF77AA; }
-.mizuho { color: #FF9900; }
-.tsubame { color: #66CCFF; }
 </style>
 </head>
 
@@ -61,42 +60,37 @@ body {
 <script>
 const board = document.getElementById("board");
 
-fetch("hakata.json")
-  .then(res => {
-    if (!res.ok) throw new Error("JSON load error");
-    return res.json();
-  })
+fetch("./hakata.json")
+  .then(res => res.json())
   .then(data => {
     board.innerHTML = "";
     data.forEach(t => {
       const row = document.createElement("div");
       row.className = "row";
 
+      const typeClass = {
+        "のぞみ": "nozomi",
+        "ひかり": "hikari",
+        "こだま": "kodama",
+        "さくら": "sakura",
+        "みずほ": "mizuho",
+        "つばめ": "tsubame"
+      }[t.type] || "";
+
       row.innerHTML = `
         <div class="top">
-          <div class="train ${classByType(t.type)}">${t.type}${t.number}号</div>
+          <div class="train ${typeClass}">${t.type}${t.number}号</div>
           <div class="time">${t.time}</div>
         </div>
         <div class="dest">${t.destination}</div>
       `;
-
       board.appendChild(row);
     });
   })
-  .catch(() => {
-    board.innerHTML = "<p style='color:red'>ダイヤを読み込めません</p>";
+  .catch(err => {
+    console.error(err);
+    board.innerHTML = "ダイヤを読み込めません";
   });
-
-function classByType(type) {
-  return {
-    "のぞみ": "nozomi",
-    "ひかり": "hikari",
-    "こだま": "kodama",
-    "さくら": "sakura",
-    "みずほ": "mizuho",
-    "つばめ": "tsubame"
-  }[type] || "";
-}
 </script>
 </body>
 </html>
