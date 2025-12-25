@@ -6,112 +6,97 @@
 <title>博多駅 新幹線 発車案内</title>
 
 <style>
-  body {
-    margin: 0;
-    background: #000;
-    color: #fff;
-    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
-                 "Yu Gothic", Meiryo, sans-serif;
-  }
+body {
+  margin: 0;
+  background: #000;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+               "Yu Gothic", Meiryo, sans-serif;
+}
 
-  h1 {
-    text-align: center;
-    margin: 10px 0;
-    font-size: 20px;
-  }
+h1 {
+  text-align: center;
+  margin: 10px 0;
+  font-size: 20px;
+}
 
-  /* 表示エリア（ここがスクロール枠） */
-  #board {
-    height: 70vh;
-    overflow: hidden;
-    padding: 0 10px;
-  }
+#board {
+  height: 70vh;
+  overflow: hidden;
+  padding: 0 10px;
+}
 
-  .row {
-    display: grid;
-    grid-template-columns: 60px 60px 60px 1fr;
-    align-items: center;
-    border-bottom: 1px solid #333;
-    padding: 6px 0;
-    font-size: 16px;
-  }
+.row {
+  display: grid;
+  grid-template-columns: 70px 70px 70px 1fr;
+  border-bottom: 1px solid #333;
+  padding: 6px 0;
+  font-size: 16px;
+}
 
-  /* 種別カラー */
-  .nozomi { color: #ffd400; }   /* 黄色 */
-  .hikari { color: #00e5ff; }
-  .sakura { color: #ff8ad8; }
-  .mizuho { color: #ff9800; }
-  .kodama { color: #00ff7f; }
-  .tsubame { color: #aaa; }
+.nozomi { color: #ffd400; }
+.hikari { color: #00e5ff; }
+.sakura { color: #ff8ad8; }
+.mizuho { color: #ff9800; }
+.kodama { color: #00ff7f; }
+.tsubame { color: #aaa; }
 
-  .time {
-    text-align: right;
-    padding-right: 5px;
-  }
+.time { text-align: right; padding-right: 5px; }
 </style>
 </head>
 
 <body>
 
 <h1>博多駅 新幹線 発車案内</h1>
-
 <div id="board"></div>
 
 <script>
 const board = document.getElementById("board");
+let rowsHTML = "";
 
 function loadTimetable() {
   fetch("./hakata.json")
     .then(res => res.json())
     .then(data => {
       board.innerHTML = "";
+      rowsHTML = "";
 
       const now = new Date();
-      const nowMinutes = now.getHours() * 60 + now.getMinutes();
+      const nowMin = now.getHours() * 60 + now.getMinutes();
 
       data.forEach(t => {
         const [h, m] = t.time.split(":").map(Number);
-        const trainMinutes = h * 60 + m;
-        if (trainMinutes < nowMinutes) return;
-
-        const row = document.createElement("div");
-        row.className = "row";
+        if (h * 60 + m < nowMin) return;
 
         const typeClass = {
-          "のぞみ": "nozomi",
-          "ひかり": "hikari",
-          "さくら": "sakura",
-          "みずほ": "mizuho",
-          "こだま": "kodama",
-          "つばめ": "tsubame"
+          "のぞみ":"nozomi","ひかり":"hikari","さくら":"sakura",
+          "みずほ":"mizuho","こだま":"kodama","つばめ":"tsubame"
         }[t.type] || "";
 
-        row.innerHTML = `
-          <div class="${typeClass}">${t.type}</div>
-          <div>${t.number}号</div>
-          <div class="time">${t.time}</div>
-          <div class="${typeClass}">${t.destination}</div>
+        rowsHTML += `
+          <div class="row">
+            <div class="${typeClass}">${t.type}</div>
+            <div>${t.number}号</div>
+            <div class="time">${t.time}</div>
+            <div class="${typeClass}">${t.destination}</div>
+          </div>
         `;
-
-        board.appendChild(row);
       });
 
+      // 🔁 内容が少なくても流れるように複製
+      board.innerHTML = rowsHTML + rowsHTML;
       board.scrollTop = 0;
-    })
-    .catch(() => {
-      board.innerHTML = "ダイヤを読み込めません";
     });
 }
 
-/* 自動スクロール */
+/* 電光掲示板スクロール */
 setInterval(() => {
   board.scrollTop += 1;
-  if (board.scrollTop + board.clientHeight >= board.scrollHeight) {
+  if (board.scrollTop >= board.scrollHeight / 2) {
     board.scrollTop = 0;
   }
 }, 40);
 
-/* 初回＆30秒更新 */
 loadTimetable();
 setInterval(loadTimetable, 30000);
 </script>
