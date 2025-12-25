@@ -1,90 +1,88 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>新幹線案内表示</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>新幹線案内スクロール</title>
 
 <style>
-body {
-  margin: 0;
-  background: black;
-  overflow: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-}
+  body {
+    margin: 0;
+    background: black;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  }
 
-#board {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 46px;
-  overflow: hidden;
-  background: black;
-}
+  /* 表示エリア（下部固定） */
+  .board {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: black;
+  }
 
-#scroll-wrap {
-  display: flex;
-  width: max-content;
-  animation: scroll 24s linear infinite;
-}
+  /* スクロール全体 */
+  .scroll {
+    display: flex;
+    width: max-content;
+    animation: scroll 40s linear infinite;
+  }
 
-.train {
-  display: inline-flex;
-  align-items: center;
-  margin-right: 8px; /* 見切り 8px */
-  font-size: 22px;   /* ← 少し大きく */
-  white-space: nowrap;
-}
+  /* 各列車ブロック */
+  .train {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 16px; /* ← 見切り間隔 */
+    font-size: 24px;    /* ← 文字サイズ */
+    white-space: nowrap;
+  }
 
-/* 色 */
-.nozomi { color: #FFD400; }
-.hikari { color: #FFFFFF; }
-.kodama { color: #3FA9F5; }
-.sakura { color: #FF6FAE; }
-.mizuho { color: #FF9F1C; }
-.tsubame { color: #5FD3E3; }
+  /* 種別色 */
+  .nozomi { color: #ffd400; }  /* 黄色 */
+  .mizuho { color: #ff9800; }  /* オレンジ */
+  .sakura { color: #ff6fae; }  /* ピンク */
+  .kodama { color: #4da6ff; }  /* 青 */
+  .tsubame { color: #66e0e0; } /* 水色 */
 
-.time, .dest {
-  color: white;
-  margin-left: 10px;
-}
+  .time, .dest {
+    color: white;
+    margin-left: 8px;
+  }
 
-/* ★ 無限スクロール（戻り見えない） */
-@keyframes scroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
+  @keyframes scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
 </style>
 </head>
 
 <body>
 
-<div id="board">
-  <div id="scroll-wrap"></div>
+<div class="board">
+  <div class="scroll">
+    <!-- ====== 1周目 ====== -->
+    <div class="train nozomi">のぞみ 12号<span class="time">22:10</span><span class="dest">東京</span></div>
+    <div class="train mizuho">みずほ 612号<span class="time">22:30</span><span class="dest">鹿児島中央</span></div>
+    <div class="train kodama">こだま 856号<span class="time">22:42</span><span class="dest">博多</span></div>
+    <div class="train sakura">さくら 570号<span class="time">22:54</span><span class="dest">新大阪</span></div>
+    <div class="train tsubame">つばめ 321号<span class="time">22:55</span><span class="dest">鹿児島中央</span></div>
+
+    <!-- ====== 2周目（無限スクロール用・完全同一） ====== -->
+    <div class="train nozomi">のぞみ 12号<span class="time">22:10</span><span class="dest">東京</span></div>
+    <div class="train mizuho">みずほ 612号<span class="time">22:30</span><span class="dest">鹿児島中央</span></div>
+    <div class="train kodama">こだま 856号<span class="time">22:42</span><span class="dest">博多</span></div>
+    <div class="train sakura">さくら 570号<span class="time">22:54</span><span class="dest">新大阪</span></div>
+    <div class="train tsubame">つばめ 321号<span class="time">22:55</span><span class="dest">鹿児島中央</span></div>
+  </div>
 </div>
-
-<script>
-const trains = [
-  { type: "みずほ", no: "612号", time: "22:30", dest: "鹿児島中央", cls: "mizuho" },
-  { type: "こだま", no: "856号", time: "22:42", dest: "博多", cls: "kodama" },
-  { type: "さくら", no: "570号", time: "22:54", dest: "新大阪", cls: "sakura" },
-  { type: "のぞみ", no: "64号",  time: "23:06", dest: "東京", cls: "nozomi" }
-];
-
-const wrap = document.getElementById("scroll-wrap");
-
-/* 2回連結して無限化 */
-[...trains, ...trains].forEach(t => {
-  const el = document.createElement("div");
-  el.className = "train";
-  el.innerHTML = `
-    <span class="${t.cls}">${t.type} ${t.no}</span>
-    <span class="time">${t.time}</span>
-    <span class="dest">${t.dest}</span>
-  `;
-  wrap.appendChild(el);
-});
-</script>
 
 </body>
 </html>
