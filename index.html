@@ -8,92 +8,94 @@
 <style>
 body {
   margin: 0;
-  background: black;
-  color: white;
-  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+  background: #000;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
 }
 
 #board {
-  padding: 10px;
-  max-height: 100vh;
+  padding: 12px;
+  height: 100vh;
   overflow-y: auto;
 }
 
 .row {
-  display: flex;
-  align-items: center;
   border-bottom: 1px solid #333;
   padding: 10px 0;
+}
+
+.top {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
   font-size: 22px;
 }
 
 .train {
-  width: 110px;
   font-weight: bold;
 }
 
 .time {
-  width: 80px;
-  text-align: center;
+  color: white;
 }
 
 .dest {
-  flex: 1;
-  padding-left: 10px;
+  font-size: 20px;
+  color: white;
+  margin-top: 2px;
 }
 
-/* 列車色 */
+/* 列車種別 色 */
 .nozomi { color: #FFD700; }
 .hikari { color: #FF3333; }
 .kodama { color: #3399FF; }
-.sakura { color: #FF66B2; }
+.sakura { color: #FF77AA; }
 .mizuho { color: #FF9900; }
 .tsubame { color: #66CCFF; }
 </style>
 </head>
 
 <body>
-<div id="board"></div>
+<div id="board">読み込み中…</div>
 
 <script>
-fetch("hakata_shinkansen_complete.json")
-  .then(res => res.json())
-  .then(data => {
-    const board = document.getElementById("board");
+const board = document.getElementById("board");
 
-    data.timetable.forEach(t => {
+fetch("hakata.json")
+  .then(res => {
+    if (!res.ok) throw new Error("JSON load error");
+    return res.json();
+  })
+  .then(data => {
+    board.innerHTML = "";
+    data.forEach(t => {
       const row = document.createElement("div");
       row.className = "row";
 
-      const train = document.createElement("div");
-      train.className = "train " + typeClass(t.type);
-      train.textContent = t.type + t.number + "号";
+      row.innerHTML = `
+        <div class="top">
+          <div class="train ${classByType(t.type)}">${t.type}${t.number}号</div>
+          <div class="time">${t.time}</div>
+        </div>
+        <div class="dest">${t.destination}</div>
+      `;
 
-      const time = document.createElement("div");
-      time.className = "time";
-      time.textContent = t.departure;
-
-      const dest = document.createElement("div");
-      dest.className = "dest";
-      dest.textContent = t.destination;
-
-      row.appendChild(train);
-      row.appendChild(time);
-      row.appendChild(dest);
       board.appendChild(row);
     });
+  })
+  .catch(() => {
+    board.innerHTML = "<p style='color:red'>ダイヤを読み込めません</p>";
   });
 
-function typeClass(type) {
-  switch (type) {
-    case "のぞみ": return "nozomi";
-    case "ひかり": return "hikari";
-    case "こだま": return "kodama";
-    case "さくら": return "sakura";
-    case "みずほ": return "mizuho";
-    case "つばめ": return "tsubame";
-    default: return "";
-  }
+function classByType(type) {
+  return {
+    "のぞみ": "nozomi",
+    "ひかり": "hikari",
+    "こだま": "kodama",
+    "さくら": "sakura",
+    "みずほ": "mizuho",
+    "つばめ": "tsubame"
+  }[type] || "";
 }
 </script>
 </body>
