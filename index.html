@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>博多駅 新幹線 発車案内</title>
+
+<title>新幹線 発車案内</title>
 
 <style>
 body {
@@ -13,40 +14,38 @@ body {
   font-family: "Helvetica Neue", Arial, sans-serif;
 }
 
-h1 {
-  text-align: center;
-  padding: 14px 0;
-  font-size: 22px;
-  border-bottom: 1px solid #333;
-}
-
+/* 表示エリア */
 #board {
   overflow: hidden;
-  height: calc(100vh - 60px);
+  height: 100vh;
 }
 
+/* スクロール本体 */
 #list {
   animation: scroll 20s linear infinite;
 }
 
+/* 1行 */
 .row {
   display: grid;
   grid-template-columns: 1.2fr 1fr 1fr 1.5fr;
-  padding: 14px 10px;
+  padding: 14px 12px;
   border-bottom: 1px solid #333;
   font-size: 18px;
 }
 
 /* 列車色 */
-.mizuho { color: #ff9f1a; }
-.hikari { color: #ff3333; }
-.kodama { color: #3a8bff; }
-.tsubame { color: #66e0ff; }
+.mizuho { color: #ff9f1a; }   /* みずほ */
+.hikari { color: #ff3333; }   /* ひかり */
+.kodama { color: #3a8bff; }   /* こだま */
+.tsubame { color: #66e0ff; }  /* つばめ */
 
+/* 時刻・行先 */
 .time, .dest {
   color: white;
 }
 
+/* 自動スクロール */
 @keyframes scroll {
   0%   { transform: translateY(0); }
   100% { transform: translateY(-50%); }
@@ -55,8 +54,6 @@ h1 {
 </head>
 
 <body>
-
-<h1>博多駅 新幹線 発車案内</h1>
 
 <div id="board">
   <div id="list"></div>
@@ -69,12 +66,12 @@ const trains = [
   { name: "つばめ", class: "tsubame", no: "321号", time: "22:55", dest: "鹿児島中央" }
 ];
 
-function getNowTime() {
-  const now = new Date();
-  return now.getHours() * 60 + now.getMinutes();
+function nowMinutes() {
+  const d = new Date();
+  return d.getHours() * 60 + d.getMinutes();
 }
 
-function timeToMin(t) {
+function toMinutes(t) {
   const [h, m] = t.split(":").map(Number);
   return h * 60 + m;
 }
@@ -83,10 +80,10 @@ function render() {
   const list = document.getElementById("list");
   list.innerHTML = "";
 
-  const nowMin = getNowTime();
-  const upcoming = trains.filter(t => timeToMin(t.time) >= nowMin);
+  const now = nowMinutes();
+  const upcoming = trains.filter(t => toMinutes(t.time) >= now);
 
-  // 2回並べて無限スクロール
+  // 無限スクロール用に2回描画
   [...upcoming, ...upcoming].forEach(t => {
     const row = document.createElement("div");
     row.className = "row";
@@ -101,7 +98,7 @@ function render() {
 }
 
 render();
-setInterval(render, 60000); // 1分ごと更新
+setInterval(render, 60000); // 毎分更新
 </script>
 
 </body>
