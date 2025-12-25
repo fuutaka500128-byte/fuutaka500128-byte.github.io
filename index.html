@@ -3,92 +3,115 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>新幹線案内</title>
+<title>新幹線発車案内</title>
 
 <style>
 body {
   margin: 0;
   background: black;
-  overflow: hidden;
-  font-family: "Helvetica Neue", Arial, sans-serif;
   color: white;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  overflow: hidden;
 }
 
-/* ===== 下部 横スクロールエリア ===== */
+/* 下部スクロール枠 */
 #ticker-area {
   position: fixed;
   bottom: 0;
-  left: 0;
   width: 100%;
-  height: 70px;           /* ← 赤枠の高さ */
+  height: 90px;
   overflow: hidden;
-  border-top: 1px solid #333;
+  border-top: 2px solid #333;
 }
 
-/* スクロール本体 */
+/* 横スクロール本体 */
 #ticker {
-  display: inline-block;
+  display: flex;
+  align-items: center;
   white-space: nowrap;
-  padding-left: 100%;
-  animation: ticker 18s linear infinite;
+  animation: scroll 25s linear infinite;
+}
+
+/* 1列車 */
+.train {
+  display: flex;
+  align-items: center;
+  margin-right: 60px;
   font-size: 22px;
-  line-height: 70px;
 }
 
 /* 列車色 */
-.hikari { color: #ff3333; }
-.mizuho { color: #ff9f1a; }
-.kodama { color: #3a8bff; }
-.tsubame { color: #66e0ff; }
+.nozomi { color: #FFD700; }
+.hikari { color: #FF4040; }
+.mizuho { color: orange; }
+.sakura { color: hotpink; }
+.kodama { color: dodgerblue; }
+.tsubame { color: deepskyblue; }
 
-@keyframes ticker {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
+/* 時刻・行先 */
+.time, .dest {
+  color: white;
+  margin-left: 20px;
+}
+
+@keyframes scroll {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(-100%); }
 }
 </style>
 </head>
 
 <body>
 
-<!-- 下部 横スクロール -->
 <div id="ticker-area">
   <div id="ticker"></div>
 </div>
 
 <script>
 const trains = [
-  { name: "みずほ", class: "mizuho", no: "612号", time: "22:30", dest: "鹿児島中央" },
-  { name: "こだま", class: "kodama", no: "856号", time: "22:42", dest: "博多" },
-  { name: "つばめ", class: "tsubame", no: "321号", time: "22:55", dest: "鹿児島中央" }
+  // ★ 順番はバラバラでもOK
+  { name:"つばめ", class:"tsubame", no:"321号", time:"22:55", dest:"鹿児島中央" },
+  { name:"みずほ", class:"mizuho", no:"612号", time:"22:30", dest:"鹿児島中央" },
+  { name:"こだま", class:"kodama", no:"856号", time:"22:42", dest:"博多" }
 ];
 
-function nowMinutes() {
-  const d = new Date();
-  return d.getHours() * 60 + d.getMinutes();
+function currentMinutes() {
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
 }
 
-function toMinutes(t) {
+function timeToMinutes(t) {
   const [h, m] = t.split(":").map(Number);
   return h * 60 + m;
 }
 
-function renderTicker() {
-  const now = nowMinutes();
-  const upcoming = trains.filter(t => toMinutes(t.time) >= now);
+function render() {
+  const ticker = document.getElementById("ticker");
+  ticker.innerHTML = "";
 
-  const text = upcoming.map(t =>
-    `<span class="${t.class}">
-      ${t.name} ${t.no} ${t.time} ${t.dest}
-    </span>`
-  ).join("　　");
+  // ① 発車前のみ抽出
+  let upcoming = trains.filter(t => timeToMinutes(t.time) > currentMinutes());
 
-  // 無限用に2回連結
-  document.getElementById("ticker").innerHTML = text + "　　" + text;
+  // ② ★ 時刻順に自動ソート（ここが追加点）
+  upcoming.sort((a, b) => {
+    return timeToMinutes(a.time) - timeToMinutes(b.time);
+  });
+
+  // ③ 表示
+  upcoming.forEach(tr => {
+    const div = document.createElement("div");
+    div.className = "train";
+    div.innerHTML = `
+      <span class="${tr.class}">${tr.name} ${tr.no}</span>
+      <span class="time">${tr.time}</span>
+      <span class="dest">${tr.dest}</span>
+    `;
+    ticker.appendChild(div);
+  });
 }
 
-renderTicker();
-setInterval(renderTicker, 60000);
+render();
+setInterval(render, 60000);
 </script>
 
 </body>
