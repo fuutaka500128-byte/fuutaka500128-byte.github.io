@@ -3,33 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>新幹線発車案内</title>
+<title>Shinkansen Ticker</title>
 
 <style>
 body {
   margin: 0;
   background: black;
-  color: white;
-  font-family: "Helvetica Neue", Arial, sans-serif;
   overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+               "Meiryo", sans-serif;
 }
 
-/* 下部スクロール枠 */
+/* 表示エリア（赤枠相当） */
 #ticker-area {
   position: fixed;
   bottom: 0;
   width: 100%;
-  height: 90px;
+  height: 60px;
   overflow: hidden;
+  background: black;
   border-top: 2px solid #333;
 }
 
-/* 横スクロール本体 */
+/* 横スクロール */
 #ticker {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  height: 100%;
   white-space: nowrap;
-  animation: scroll 25s linear infinite;
+  animation: scroll-left 25s linear infinite;
 }
 
 /* 1列車 */
@@ -40,13 +42,13 @@ body {
   font-size: 22px;
 }
 
-/* 列車色 */
-.nozomi { color: #FFD700; }
-.hikari { color: #FF4040; }
-.mizuho { color: orange; }
-.sakura { color: hotpink; }
+/* 種別カラー */
+.nozomi { color: yellow; }
+.hikari { color: red; }
 .kodama { color: dodgerblue; }
 .tsubame { color: deepskyblue; }
+.mizuho { color: orange; }
+.sakura { color: hotpink; }
 
 /* 時刻・行先 */
 .time, .dest {
@@ -54,7 +56,8 @@ body {
   margin-left: 20px;
 }
 
-@keyframes scroll {
+/* 右 → 左 */
+@keyframes scroll-left {
   from { transform: translateX(100%); }
   to   { transform: translateX(-100%); }
 }
@@ -64,54 +67,70 @@ body {
 <body>
 
 <div id="ticker-area">
-  <div id="ticker"></div>
+  <div id="ticker">
+
+    <div class="train nozomi" data-time="21:45">
+      のぞみ 12号
+      <span class="time">21:45</span>
+      <span class="dest">東京</span>
+    </div>
+
+    <div class="train sakura" data-time="22:05">
+      さくら 563号
+      <span class="time">22:05</span>
+      <span class="dest">鹿児島中央</span>
+    </div>
+
+    <div class="train mizuho" data-time="22:30">
+      みずほ 612号
+      <span class="time">22:30</span>
+      <span class="dest">鹿児島中央</span>
+    </div>
+
+    <div class="train kodama" data-time="22:42">
+      こだま 856号
+      <span class="time">22:42</span>
+      <span class="dest">博多</span>
+    </div>
+
+    <div class="train tsubame" data-time="22:55">
+      つばめ 321号
+      <span class="time">22:55</span>
+      <span class="dest">鹿児島中央</span>
+    </div>
+
+    <div class="train hikari" data-time="23:10">
+      ひかり 594号
+      <span class="time">23:10</span>
+      <span class="dest">新大阪</span>
+    </div>
+
+  </div>
 </div>
 
 <script>
-const trains = [
-  // ★ 順番はバラバラでもOK
-  { name:"つばめ", class:"tsubame", no:"321号", time:"22:55", dest:"鹿児島中央" },
-  { name:"みずほ", class:"mizuho", no:"612号", time:"22:30", dest:"鹿児島中央" },
-  { name:"こだま", class:"kodama", no:"856号", time:"22:42", dest:"博多" }
-];
-
-function currentMinutes() {
+function updateTrains() {
   const now = new Date();
-  return now.getHours() * 60 + now.getMinutes();
-}
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
 
-function timeToMinutes(t) {
-  const [h, m] = t.split(":").map(Number);
-  return h * 60 + m;
-}
+  document.querySelectorAll('.train').forEach(train => {
+    const time = train.dataset.time;
+    const [h, m] = time.split(':').map(Number);
+    const trainMinutes = h * 60 + m;
 
-function render() {
-  const ticker = document.getElementById("ticker");
-  ticker.innerHTML = "";
-
-  // ① 発車前のみ抽出
-  let upcoming = trains.filter(t => timeToMinutes(t.time) > currentMinutes());
-
-  // ② ★ 時刻順に自動ソート（ここが追加点）
-  upcoming.sort((a, b) => {
-    return timeToMinutes(a.time) - timeToMinutes(b.time);
-  });
-
-  // ③ 表示
-  upcoming.forEach(tr => {
-    const div = document.createElement("div");
-    div.className = "train";
-    div.innerHTML = `
-      <span class="${tr.class}">${tr.name} ${tr.no}</span>
-      <span class="time">${tr.time}</span>
-      <span class="dest">${tr.dest}</span>
-    `;
-    ticker.appendChild(div);
+    if (trainMinutes <= nowMinutes) {
+      train.style.display = 'none';
+    } else {
+      train.style.display = 'flex';
+    }
   });
 }
 
-render();
-setInterval(render, 60000);
+// 初回実行
+updateTrains();
+
+// 1分ごとに更新
+setInterval(updateTrains, 60000);
 </script>
 
 </body>
