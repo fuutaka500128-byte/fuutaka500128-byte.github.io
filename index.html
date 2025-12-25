@@ -4,59 +4,56 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>新幹線 発車案内</title>
+<title>新幹線案内</title>
 
 <style>
 body {
   margin: 0;
   background: black;
-  color: white;
+  overflow: hidden;
   font-family: "Helvetica Neue", Arial, sans-serif;
+  color: white;
 }
 
-/* 表示エリア */
-#board {
+/* ===== 下部 横スクロールエリア ===== */
+#ticker-area {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;           /* ← 赤枠の高さ */
   overflow: hidden;
-  height: 100vh;
+  border-top: 1px solid #333;
 }
 
 /* スクロール本体 */
-#list {
-  animation: scroll 20s linear infinite;
-}
-
-/* 1行 */
-.row {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr 1.5fr;
-  padding: 14px 12px;
-  border-bottom: 1px solid #333;
-  font-size: 18px;
+#ticker {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: ticker 18s linear infinite;
+  font-size: 22px;
+  line-height: 70px;
 }
 
 /* 列車色 */
-.mizuho { color: #ff9f1a; }   /* みずほ */
-.hikari { color: #ff3333; }   /* ひかり */
-.kodama { color: #3a8bff; }   /* こだま */
-.tsubame { color: #66e0ff; }  /* つばめ */
+.hikari { color: #ff3333; }
+.mizuho { color: #ff9f1a; }
+.kodama { color: #3a8bff; }
+.tsubame { color: #66e0ff; }
 
-/* 時刻・行先 */
-.time, .dest {
-  color: white;
-}
-
-/* 自動スクロール */
-@keyframes scroll {
-  0%   { transform: translateY(0); }
-  100% { transform: translateY(-50%); }
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
 }
 </style>
 </head>
 
 <body>
 
-<div id="board">
-  <div id="list"></div>
+<!-- 下部 横スクロール -->
+<div id="ticker-area">
+  <div id="ticker"></div>
 </div>
 
 <script>
@@ -76,29 +73,22 @@ function toMinutes(t) {
   return h * 60 + m;
 }
 
-function render() {
-  const list = document.getElementById("list");
-  list.innerHTML = "";
-
+function renderTicker() {
   const now = nowMinutes();
   const upcoming = trains.filter(t => toMinutes(t.time) >= now);
 
-  // 無限スクロール用に2回描画
-  [...upcoming, ...upcoming].forEach(t => {
-    const row = document.createElement("div");
-    row.className = "row";
-    row.innerHTML = `
-      <div class="${t.class}">${t.name}</div>
-      <div class="${t.class}">${t.no}</div>
-      <div class="time">${t.time}</div>
-      <div class="dest">${t.dest}</div>
-    `;
-    list.appendChild(row);
-  });
+  const text = upcoming.map(t =>
+    `<span class="${t.class}">
+      ${t.name} ${t.no} ${t.time} ${t.dest}
+    </span>`
+  ).join("　　");
+
+  // 無限用に2回連結
+  document.getElementById("ticker").innerHTML = text + "　　" + text;
 }
 
-render();
-setInterval(render, 60000); // 毎分更新
+renderTicker();
+setInterval(renderTicker, 60000);
 </script>
 
 </body>
