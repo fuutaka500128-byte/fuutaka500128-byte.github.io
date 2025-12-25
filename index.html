@@ -10,125 +10,98 @@ body {
   margin: 0;
   background: black;
   color: white;
-  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", sans-serif;
+  font-family: "Helvetica Neue", Arial, sans-serif;
 }
 
-/* タイトル */
-header {
+h1 {
   text-align: center;
+  padding: 14px 0;
   font-size: 22px;
-  padding: 16px 0;
   border-bottom: 1px solid #333;
 }
 
-/* 発車案内エリア（上固定） */
 #board {
-  padding-bottom: 60px; /* 下テロップ分の余白 */
+  overflow: hidden;
+  height: calc(100vh - 60px);
 }
 
-.train {
+#list {
+  animation: scroll 20s linear infinite;
+}
+
+.row {
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr 1.6fr;
-  padding: 14px 12px;
+  grid-template-columns: 1.2fr 1fr 1fr 1.5fr;
+  padding: 14px 10px;
   border-bottom: 1px solid #333;
   font-size: 18px;
 }
 
-/* 色分け */
-.nozomi { color: #ffd700; }
-.hikari { color: #ff4444; }
-.mizuho { color: #ff9900; }
-.sakura { color: #ff66cc; }
-.kodama { color: #3399ff; }
-.tsubame { color: #66ffff; }
+/* 列車色 */
+.mizuho { color: #ff9f1a; }
+.hikari { color: #ff3333; }
+.kodama { color: #3a8bff; }
+.tsubame { color: #66e0ff; }
 
 .time, .dest {
   color: white;
 }
 
-/* 下部テロップ（固定） */
-#ticker {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 36px;
-  background: black;
-  border-top: 1px solid #333;
-  overflow: hidden;
-}
-
-#ticker-text {
-  white-space: nowrap;
-  display: inline-block;
-  padding-left: 100%;
-  line-height: 36px;
-  color: #00ff99;
-  animation: ticker 18s linear infinite;
-}
-
-@keyframes ticker {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-100%); }
+@keyframes scroll {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
 }
 </style>
 </head>
 
 <body>
 
-<header>博多駅 新幹線 発車案内</header>
+<h1>博多駅 新幹線 発車案内</h1>
 
 <div id="board">
-
-  <div class="train kodama" data-time="22:42">
-    <div>こだま</div><div>856号</div>
-    <div class="time">22:42</div>
-    <div class="dest">博多</div>
-  </div>
-
-  <div class="train tsubame" data-time="22:55">
-    <div>つばめ</div><div>321号</div>
-    <div class="time">22:55</div>
-    <div class="dest">鹿児島中央</div>
-  </div>
-
-  <div class="train kodama" data-time="22:42">
-    <div>こだま</div><div>856号</div>
-    <div class="time">22:42</div>
-    <div class="dest">博多</div>
-  </div>
-
-  <div class="train tsubame" data-time="22:55">
-    <div>つばめ</div><div>321号</div>
-    <div class="time">22:55</div>
-    <div class="dest">鹿児島中央</div>
-  </div>
-
-</div>
-
-<!-- 下テロップ -->
-<div id="ticker">
-  <div id="ticker-text">
-    ★ 新幹線をご利用くださいましてありがとうございます。発車時刻にご注意ください ★
-  </div>
+  <div id="list"></div>
 </div>
 
 <script>
-function removeExpired() {
-  const now = new Date();
-  const nowMin = now.getHours() * 60 + now.getMinutes();
+const trains = [
+  { name: "みずほ", class: "mizuho", no: "612号", time: "22:30", dest: "鹿児島中央" },
+  { name: "こだま", class: "kodama", no: "856号", time: "22:42", dest: "博多" },
+  { name: "つばめ", class: "tsubame", no: "321号", time: "22:55", dest: "鹿児島中央" }
+];
 
-  document.querySelectorAll(".train").forEach(train => {
-    const t = train.dataset.time;
-    const [h, m] = t.split(":").map(Number);
-    const trainMin = h * 60 + m;
-    if (trainMin < nowMin) {
-      train.remove();
-    }
+function getNowTime() {
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
+
+function timeToMin(t) {
+  const [h, m] = t.split(":").map(Number);
+  return h * 60 + m;
+}
+
+function render() {
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  const nowMin = getNowTime();
+  const upcoming = trains.filter(t => timeToMin(t.time) >= nowMin);
+
+  // 2回並べて無限スクロール
+  [...upcoming, ...upcoming].forEach(t => {
+    const row = document.createElement("div");
+    row.className = "row";
+    row.innerHTML = `
+      <div class="${t.class}">${t.name}</div>
+      <div class="${t.class}">${t.no}</div>
+      <div class="time">${t.time}</div>
+      <div class="dest">${t.dest}</div>
+    `;
+    list.appendChild(row);
   });
 }
 
-setInterval(removeExpired, 60000);
-removeExpired();
+render();
+setInterval(render, 60000); // 1分ごと更新
 </script>
 
 </body>
