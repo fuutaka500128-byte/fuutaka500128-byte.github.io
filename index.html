@@ -6,99 +6,144 @@
 <title>博多駅 新幹線 発車案内</title>
 
 <style>
-body {
+html, body {
   margin: 0;
-  background: #000;
-  color: #fff;
+  padding: 0;
+  background: black;
+  color: white;
   font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
                "Yu Gothic", Meiryo, sans-serif;
-}
-
-h1 {
-  text-align: center;
-  margin: 10px 0;
-  font-size: 20px;
-}
-
-#board {
-  height: 70vh;
+  height: 100%;
   overflow: hidden;
-  padding: 0 10px;
 }
 
+/* タイトル */
+header {
+  text-align: center;
+  padding: 16px 0;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* スクロール領域 */
+#scroll-area {
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+
+/* 行 */
 .row {
   display: grid;
-  grid-template-columns: 70px 70px 70px 1fr;
+  grid-template-columns: 90px 80px 70px 1fr;
+  align-items: center;
+  padding: 10px 14px;
   border-bottom: 1px solid #333;
-  padding: 6px 0;
-  font-size: 16px;
+  font-size: 18px;
 }
 
-.nozomi { color: #ffd400; }
-.hikari { color: #00e5ff; }
-.sakura { color: #ff8ad8; }
-.mizuho { color: #ff9800; }
-.kodama { color: #00ff7f; }
-.tsubame { color: #aaa; }
+/* 文字 */
+.train, .number {
+  font-weight: bold;
+}
 
-.time { text-align: right; padding-right: 5px; }
+.time, .dest {
+  color: white;
+}
+
+/* 色指定 */
+.nozomi  { color: #ffd400; }
+.hikari  { color: #ff3b3b; }
+.kodama  { color: #2979ff; }
+.sakura  { color: #ff8ad8; }
+.mizuho  { color: #ff9800; }
+.tsubame { color: #4fc3f7; }
 </style>
 </head>
 
 <body>
 
-<h1>博多駅 新幹線 発車案内</h1>
-<div id="board"></div>
+<header>博多駅 新幹線 発車案内</header>
+
+<div id="scroll-area">
+
+  <div class="row" data-time="21:58">
+    <div class="train nozomi">のぞみ</div>
+    <div class="number nozomi">3号</div>
+    <div class="time">21:58</div>
+    <div class="dest">東京</div>
+  </div>
+
+  <div class="row" data-time="22:10">
+    <div class="train hikari">ひかり</div>
+    <div class="number hikari">594号</div>
+    <div class="time">22:10</div>
+    <div class="dest">新大阪</div>
+  </div>
+
+  <div class="row" data-time="22:18">
+    <div class="train sakura">さくら</div>
+    <div class="number sakura">570号</div>
+    <div class="time">22:18</div>
+    <div class="dest">鹿児島中央</div>
+  </div>
+
+  <div class="row" data-time="22:30">
+    <div class="train mizuho">みずほ</div>
+    <div class="number mizuho">612号</div>
+    <div class="time">22:30</div>
+    <div class="dest">鹿児島中央</div>
+  </div>
+
+  <div class="row" data-time="22:42">
+    <div class="train kodama">こだま</div>
+    <div class="number kodama">856号</div>
+    <div class="time">22:42</div>
+    <div class="dest">博多</div>
+  </div>
+
+  <div class="row" data-time="22:55">
+    <div class="train tsubame">つばめ</div>
+    <div class="number tsubame">321号</div>
+    <div class="time">22:55</div>
+    <div class="dest">鹿児島中央</div>
+  </div>
+
+</div>
 
 <script>
-const board = document.getElementById("board");
-let rowsHTML = "";
+/* ===== 自動スクロール ===== */
+const area = document.getElementById("scroll-area");
+let direction = 1;
 
-function loadTimetable() {
-  fetch("./hakata.json")
-    .then(res => res.json())
-    .then(data => {
-      board.innerHTML = "";
-      rowsHTML = "";
-
-      const now = new Date();
-      const nowMin = now.getHours() * 60 + now.getMinutes();
-
-      data.forEach(t => {
-        const [h, m] = t.time.split(":").map(Number);
-        if (h * 60 + m < nowMin) return;
-
-        const typeClass = {
-          "のぞみ":"nozomi","ひかり":"hikari","さくら":"sakura",
-          "みずほ":"mizuho","こだま":"kodama","つばめ":"tsubame"
-        }[t.type] || "";
-
-        rowsHTML += `
-          <div class="row">
-            <div class="${typeClass}">${t.type}</div>
-            <div>${t.number}号</div>
-            <div class="time">${t.time}</div>
-            <div class="${typeClass}">${t.destination}</div>
-          </div>
-        `;
-      });
-
-      // 🔁 内容が少なくても流れるように複製
-      board.innerHTML = rowsHTML + rowsHTML;
-      board.scrollTop = 0;
-    });
-}
-
-/* 電光掲示板スクロール */
 setInterval(() => {
-  board.scrollTop += 1;
-  if (board.scrollTop >= board.scrollHeight / 2) {
-    board.scrollTop = 0;
+  area.scrollTop += direction;
+
+  if (area.scrollTop + area.clientHeight >= area.scrollHeight) {
+    direction = -1;
+  }
+  if (area.scrollTop <= 0) {
+    direction = 1;
   }
 }, 40);
 
-loadTimetable();
-setInterval(loadTimetable, 30000);
+/* ===== 時刻を過ぎたら削除 ===== */
+function checkTime() {
+  const now = new Date();
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+  document.querySelectorAll(".row").forEach(row => {
+    const t = row.dataset.time;
+    const [h, m] = t.split(":").map(Number);
+    const trainMinutes = h * 60 + m;
+
+    if (nowMinutes > trainMinutes) {
+      row.remove();
+    }
+  });
+}
+
+setInterval(checkTime, 60000);
+checkTime();
 </script>
 
 </body>
