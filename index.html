@@ -2,97 +2,113 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>博多駅 新幹線案内</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新幹線発車案内</title>
 
 <style>
 body {
   margin: 0;
   background: black;
   overflow: hidden;
-  font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
 }
 
-.ticker {
+/* 下部固定エリア */
+#ticker {
   position: fixed;
   bottom: 0;
+  left: 0;
   width: 100%;
-  height: 48px;
+  height: 56px;
   background: black;
   overflow: hidden;
+  border-top: 1px solid #333;
 }
 
-.track {
+/* スクロール本体 */
+#ticker-inner {
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
-  animation: scroll 55s linear infinite;
+  padding-left: 100%;
+  animation: scroll 35s linear infinite;
 }
 
-.item {
+/* 各列車 */
+.train {
   display: inline-flex;
   align-items: center;
-  font-size: 24px;
-  margin-right: 8px; /* 駅表示風の見切り */
+  margin-right: 8px; /* 見切り 8px */
+  font-size: 20px;
 }
 
-/* 列車色 */
-.nozomi { color: #ffd400; }
-.hikari { color: #ff3b30; }
-.kodama { color: #007aff; }
-.sakura { color: #ff5fa2; }
-.mizuho { color: #ff9500; }
-.tsubame { color: #5ac8fa; }
+/* 色定義 */
+.nozomi { color: #ffd800; }
+.hikari { color: #ff3b3b; }
+.sakura { color: #ff6fae; }
+.mizuho { color: #ff9f1c; }
+.kodama { color: #3a7bff; }
+.tsubame { color: #4fdfff; }
 
 .time, .dest {
-  color: #ffffff;
-  margin-left: 6px;
+  color: white;
+  margin-left: 14px;
 }
 
+/* アニメーション */
 @keyframes scroll {
-  0%   { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
 }
 </style>
 </head>
 
 <body>
 
-<div class="ticker">
-  <div class="track" id="track"></div>
+<div id="ticker">
+  <div id="ticker-inner"></div>
 </div>
 
 <script>
-const timetable = [
-  { type:"nozomi",  name:"のぞみ12号", time:"06:03", dest:"東京" },
-  { type:"hikari",  name:"ひかり502号", time:"06:10", dest:"新大阪" },
-  { type:"kodama",  name:"こだま810号", time:"06:17", dest:"新下関" },
-  { type:"sakura",  name:"さくら544号", time:"06:25", dest:"鹿児島中央" },
-  { type:"mizuho",  name:"みずほ600号", time:"06:32", dest:"鹿児島中央" },
-  { type:"tsubame", name:"つばめ312号", time:"06:40", dest:"熊本" }
+const trains = [
+  { type:"mizuho", name:"みずほ", no:"612号", time:"22:30", dest:"鹿児島中央" },
+  { type:"kodama", name:"こだま", no:"856号", time:"22:42", dest:"博多" },
+  { type:"tsubame", name:"つばめ", no:"321号", time:"22:55", dest:"鹿児島中央" },
+  { type:"nozomi", name:"のぞみ", no:"48号", time:"23:10", dest:"東京" },
+  { type:"sakura", name:"さくら", no:"570号", time:"23:18", dest:"鹿児島中央" }
 ];
 
-// 時刻順ソート
-timetable.sort((a, b) => a.time.localeCompare(b.time));
+function currentMinutes() {
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
 
-const track = document.getElementById("track");
+function timeToMinutes(t) {
+  const [h, m] = t.split(":").map(Number);
+  return h * 60 + m;
+}
 
-// 現在時刻以降のみ表示
-const now = new Date();
-const nowTime = now.getHours().toString().padStart(2,"0") + ":" +
-                now.getMinutes().toString().padStart(2,"0");
+function render() {
+  const now = currentMinutes();
+  const inner = document.getElementById("ticker-inner");
+  inner.innerHTML = "";
 
-timetable.forEach(t => {
-  if (t.time >= nowTime) {
-    const div = document.createElement("div");
-    div.className = "item";
-    div.innerHTML = `
-      <span class="${t.type}">${t.name}</span>
-      <span class="time">${t.time}</span>
-      <span class="dest">${t.dest}</span>
-    `;
-    track.appendChild(div);
-  }
-});
+  trains
+    .filter(t => timeToMinutes(t.time) >= now)
+    .forEach(t => {
+      const el = document.createElement("div");
+      el.className = `train ${t.type}`;
+      el.innerHTML = `
+        <span>${t.name} ${t.no}</span>
+        <span class="time">${t.time}</span>
+        <span class="dest">${t.dest}</span>
+      `;
+      inner.appendChild(el);
+    });
+}
+
+render();
+setInterval(render, 60000);
 </script>
 
 </body>
