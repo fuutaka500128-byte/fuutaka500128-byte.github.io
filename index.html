@@ -14,7 +14,6 @@
       "Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
   }
 
-  /* 下部表示エリア */
   .ticker-area {
     position: fixed;
     bottom: 0;
@@ -24,21 +23,21 @@
     background: black;
     border-top: 1px solid #333;
     display: flex;
-    align-items: center; /* 完全中央 */
+    align-items: center;
   }
 
   .ticker {
     display: inline-flex;
     align-items: center;
     white-space: nowrap;
-    padding-left: 45%;
+    padding-left: 60%;
     animation: scroll-left 22s linear infinite;
   }
 
   .item {
     display: inline-flex;
     align-items: center;
-    margin-right: 40px;
+    margin-right: 48px;
     font-size: 19px;
     line-height: 1;
   }
@@ -48,7 +47,6 @@
   .time { margin-right: 14px; }
   .dest { margin-right: 14px; }
 
-  /* 色 */
   .nozomi { color: #FFD400; }
   .hikari { color: #FF3B3B; }
   .sakura { color: #FF6FAE; }
@@ -58,7 +56,7 @@
 
   @keyframes scroll-left {
     from { transform: translateX(0%); }
-    to   { transform: translateX(-92%); }
+    to   { transform: translateX(-105%); }
   }
 </style>
 </head>
@@ -96,6 +94,8 @@ function render() {
     .filter(t => toMinutes(t.time) >= now)
     .sort((a,b) => toMinutes(a.time) - toMinutes(b.time));
 
+  if (list.length === 0) return; // 列車ゼロは黒画面
+
   list.forEach(t => {
     const el = document.createElement("div");
     el.className = "item";
@@ -107,9 +107,6 @@ function render() {
     `;
     ticker.appendChild(el);
   });
-
-  ticker.style.animation =
-    list.length <= 2 ? "none" : "scroll-left 22s linear infinite";
 }
 
 render();
