@@ -1,11 +1,77 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>博多駅 新幹線ダイヤ</title>
+<meta charset="UTF-8">
+<title>博多駅 新幹線 発車案内</title>
+<style>
+body {
+  background: black;
+  color: white;
+  font-family: sans-serif;
+}
+h1 {
+  text-align: center;
+}
+.row {
+  display: grid;
+  grid-template-columns: 80px 80px 100px auto;
+  padding: 8px;
+  border-bottom: 1px solid #333;
+}
+.nozomi { color: yellow; }
+.hikari { color: cyan; }
+.kodama { color: lightgreen; }
+.sakura { color: pink; }
+.mizuho { color: orange; }
+</style>
 </head>
 <body>
-  <h1>博多駅 新幹線ダイヤ</h1>
-  <p>ここが表示されれば成功！</p>
+
+<h1>博多駅 新幹線 発車案内</h1>
+<div id="board"></div>
+
+<script>
+const board = document.getElementById("board");
+
+function loadTimetable() {
+  fetch("./hakata.json")
+    .then(res => res.json())
+    .then(data => {
+      board.innerHTML = "";
+      const now = new Date();
+      const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+      data.forEach(t => {
+        const [h, m] = t.time.split(":").map(Number);
+        const trainMinutes = h * 60 + m;
+        if (trainMinutes < nowMinutes) return;
+
+        const row = document.createElement("div");
+        row.className = "row " + ({
+          "のぞみ": "nozomi",
+          "ひかり": "hikari",
+          "こだま": "kodama",
+          "さくら": "sakura",
+          "みずほ": "mizuho"
+        }[t.type] || "");
+
+        row.innerHTML = `
+          <div>${t.type}</div>
+          <div>${t.number}号</div>
+          <div>${t.time}</div>
+          <div>${t.destination}</div>
+        `;
+        board.appendChild(row);
+      });
+    })
+    .catch(() => {
+      board.innerHTML = "ダイヤを読み込めません";
+    });
+}
+
+loadTimetable();
+setInterval(loadTimetable, 30000);
+</script>
+
 </body>
 </html>
