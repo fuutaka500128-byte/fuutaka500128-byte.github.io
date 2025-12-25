@@ -19,7 +19,7 @@
     position: fixed;
     bottom: 0;
     width: 100%;
-    height: 56px;
+    height: 48px;
     overflow: hidden;
     background: black;
     border-top: 1px solid #333;
@@ -29,21 +29,22 @@
     display: inline-flex;
     align-items: center;
     white-space: nowrap;
-    animation: scroll-left 14s linear infinite;
-    padding-left: 100%;
+    padding-left: 60%;
+    animation: scroll-left 18s linear infinite;
   }
 
   .item {
     display: inline-flex;
     align-items: center;
-    margin-right: 60px;
-    font-size: 20px;
+    margin-right: 48px;
+    font-size: 18px;
+    line-height: 1;
   }
 
-  .name { font-weight: bold; margin-right: 8px; }
-  .number { margin-right: 20px; font-weight: bold; }
-  .time { margin-right: 20px; }
-  .dest { margin-right: 20px; }
+  .name { font-weight: bold; margin-right: 6px; }
+  .number { margin-right: 16px; font-weight: bold; }
+  .time { margin-right: 16px; }
+  .dest { margin-right: 16px; }
 
   /* 色指定 */
   .nozomi { color: #ffd400; }
@@ -55,7 +56,7 @@
 
   @keyframes scroll-left {
     from { transform: translateX(0%); }
-    to   { transform: translateX(-120%); }
+    to   { transform: translateX(-100%); }
   }
 </style>
 </head>
@@ -98,27 +99,21 @@ function renderTicker() {
   active.forEach(t => {
     const div = document.createElement("div");
     div.className = "item";
-
     div.innerHTML = `
       <span class="name ${t.class}">${t.name}</span>
       <span class="number ${t.class}">${t.number}</span>
       <span class="time">${t.time}</span>
       <span class="dest">${t.dest}</span>
     `;
-
     ticker.appendChild(div);
   });
 
-  /* 中身が無い時はスクロール停止 */
-  if (active.length === 0) {
-    ticker.style.animation = "none";
-  } else {
-    ticker.style.animation = "scroll-left 14s linear infinite";
-  }
+  ticker.style.animation =
+    active.length === 0 ? "none" : "scroll-left 18s linear infinite";
 }
 
 renderTicker();
-setInterval(renderTicker, 60000); // 1分ごとに更新
+setInterval(renderTicker, 60000);
 </script>
 
 </body>
