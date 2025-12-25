@@ -14,7 +14,7 @@ body {
                "Yu Gothic", Meiryo, sans-serif;
 }
 
-/* 表示エリア（下1段のみ） */
+/* 表示エリア */
 .ticker-area {
   position: fixed;
   bottom: 0;
@@ -28,30 +28,37 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* スクロール本体 */
+/* スクロール */
 .ticker {
   display: inline-flex;
   white-space: nowrap;
-  animation: scroll 28s linear infinite;
+  animation: scroll 36s linear infinite; /* ← 遅く */
 }
 
-/* 1列車分 */
+/* 1列車 */
 .item {
   display: inline-flex;
   align-items: center;
-  font-size: 22px;
-  margin-right: 48px; /* 見切り間 */
+  font-size: 23px;              /* 少し大きめ維持 */
+  margin-right: 32px;           /* ← 見切り短く */
 }
 
-/* 色定義 */
-.nozomi { color: #FFD700; }   /* 黄色 */
+/* 種別色 */
+.nozomi { color: #FFD700; }
 .hikari { color: #FFFFFF; }
-.kodama { color: #3FA9F5; }   /* 青 */
-.sakura { color: #FF69B4; }   /* ピンク */
+.kodama { color: #3FA9F5; }
+.sakura { color: #FF69B4; }
 .mizuho { color: #FFA500; }
 .tsubame { color: #7FDBFF; }
 
-/* スクロール */
+/* 時刻・行先は白 */
+.time,
+.dest {
+  color: #FFFFFF;
+  margin-left: 14px;
+}
+
+/* スクロール定義 */
 @keyframes scroll {
   from { transform: translateX(100%); }
   to   { transform: translateX(-100%); }
@@ -97,16 +104,22 @@ function render() {
   filtered.forEach(t => {
     const div = document.createElement("div");
     div.className = `item ${t.type}`;
-    div.textContent = `${t.name}　${t.time}　${t.dest}`;
+
+    div.innerHTML = `
+      <span class="name">${t.name}</span>
+      <span class="time">${t.time}</span>
+      <span class="dest">${t.dest}</span>
+    `;
+
     ticker.appendChild(div);
   });
 
-  /* 無限スクロール用に複製 */
+  /* 無限スクロール用 */
   ticker.innerHTML += ticker.innerHTML;
 }
 
 render();
-setInterval(render, 60000); // 1分ごと更新
+setInterval(render, 60000);
 </script>
 
 </body>
