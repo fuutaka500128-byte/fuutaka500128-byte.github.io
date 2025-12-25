@@ -1,17 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>新幹線電光掲示板</title>
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+               Arial, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+}
+
+/* 表示エリア */
+.board {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 56px;
+  background: black;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+/* スクロール全体 */
+.scroll {
+  display: flex;
+  animation: scroll 40s linear infinite;
+}
+
+/* 中身（2回並べる） */
+.content {
+  display: flex;
+  padding-left: 24px;   /* 最初と最後の見切り間隔 */
+  padding-right: 24px;
+}
+
+/* 各列車 */
+.train {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 16px;   /* 見切り間隔（駅表示っぽく8px×2） */
+  font-size: 26px;      /* 少し大きめ */
+  white-space: nowrap;
+}
+
+/* 種別色 */
+.nozomi { color: #ffd400; }
+.sakura { color: #ff6fae; }
+.kodama { color: #4da6ff; }
+
+/* 時刻・行先 */
+.time,
+.dest {
+  color: white;
+  margin-left: 8px;
+}
+
+/* スクロール */
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+</style>
+</head>
+
+<body>
+
 <div class="board">
   <div class="scroll">
+
+    <!-- 1周目 -->
     <div class="content">
-      <!-- 1周目 -->
       <div class="train nozomi">のぞみ<span class="time">22:55</span><span class="dest">鹿児島中央</span></div>
       <div class="train sakura">さくら<span class="time">22:54</span><span class="dest">新大阪</span></div>
       <div class="train kodama">こだま<span class="time">22:30</span><span class="dest">鹿児島中央</span></div>
     </div>
 
+    <!-- 2周目（完全コピー） -->
     <div class="content">
-      <!-- 2周目（同じ内容） -->
       <div class="train nozomi">のぞみ<span class="time">22:55</span><span class="dest">鹿児島中央</span></div>
       <div class="train sakura">さくら<span class="time">22:54</span><span class="dest">新大阪</span></div>
       <div class="train kodama">こだま<span class="time">22:30</span><span class="dest">鹿児島中央</span></div>
     </div>
+
   </div>
 </div>
+
+</body>
+</html>
