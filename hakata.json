@@ -99,5 +99,51 @@
       "status": "normal",
       "delay": 0
     }
+{
+  "date": "2025-12-27",
+  "station": "博多",
+  "direction": "up",
+  "trains": [
+    { "time": "08:15", "service": "のぞみ", "number": "12号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "08:23", "service": "さくら", "number": "542号", "destination": "新大阪", "status": "normal", "delay": 0 },
+    { "time": "08:36", "service": "のぞみ", "number": "14号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "08:45", "service": "のぞみ", "number": "124号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "08:48", "service": "こだま", "number": "846号", "destination": "岡山", "status": "normal", "delay": 0 },
+    { "time": "08:53", "service": "みずほ", "number": "602号", "destination": "新大阪", "status": "normal", "delay": 0 },
+    { "time": "09:00", "service": "のぞみ", "number": "126号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "09:06", "service": "のぞみ", "number": "128号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "09:15", "service": "のぞみ", "number": "16号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "09:23", "service": "さくら", "number": "544号", "destination": "新大阪", "status": "normal", "delay": 0 },
+    { "time": "09:27", "service": "のぞみ", "number": "130号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "09:31", "service": "こだま", "number": "772号", "destination": "新下関", "status": "normal", "delay": 0 },
+    { "time": "09:36", "service": "のぞみ", "number": "18号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "09:44", "service": "さくら", "number": "576号", "destination": "新大阪", "status": "normal", "delay": 0 },
+    { "time": "09:49", "service": "こだま", "number": "848号", "destination": "岡山", "status": "normal", "delay": 0 },
+    { "time": "09:53", "service": "みずほ", "number": "604号", "destination": "新大阪", "status": "normal", "delay": 0 },
+    { "time": "10:00", "service": "のぞみ", "number": "134号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "10:15", "service": "のぞみ", "number": "20号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "10:23", "service": "さくら", "number": "546号", "destination": "新大阪", "status": "normal", "delay": 0 },
+    { "time": "10:27", "service": "のぞみ", "number": "138号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "10:36", "service": "のぞみ", "number": "22号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "10:42", "service": "のぞみ", "number": "140号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "10:45", "service": "さくら", "number": "548号", "destination": "新大阪", "status": "normal", "delay": 0 },
+
+    { "time": "10:52", "service": "こだま", "number": "850号", "destination": "岡山", "status": "normal", "delay": 0 },
+    { "time": "11:06", "service": "のぞみ", "number": "144号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "11:15", "service": "のぞみ", "number": "24号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "11:23", "service": "さくら", "number": "550号", "destination": "新大阪", "status": "normal", "delay": 0 },
+    { "time": "11:36", "service": "のぞみ", "number": "26号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "11:42", "service": "のぞみ", "number": "148号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "11:48", "service": "こだま", "number": "852号", "destination": "岡山", "status": "normal", "delay": 0 },
+    { "time": "11:53", "service": "みずほ", "number": "606号", "destination": "新大阪", "status": "normal", "delay": 0 },
+
+    { "time": "12:06", "service": "のぞみ", "number": "152号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "12:15", "service": "のぞみ", "number": "28号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "12:23", "service": "さくら", "number": "552号", "destination": "新大阪", "status": "normal", "delay": 0 },
+    { "time": "12:27", "service": "のぞみ", "number": "154号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "12:36", "service": "のぞみ", "number": "30号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "12:42", "service": "のぞみ", "number": "156号", "destination": "東京", "status": "normal", "delay": 0 },
+    { "time": "12:45", "service": "さくら", "number": "578号", "destination": "新大阪", "status": "normal", "delay": 0 },
+    { "time": "12:51", "service": "こだま", "number": "854号", "destination": "新大阪", "status": "normal", "delay": 0 }
   ]
 }
