@@ -1,93 +1,122 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>新幹線 発車案内</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>博多駅 新幹線 時刻表</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body {
-  margin: 0;
-  background: #000;
-  color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-}
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", sans-serif;
+      overflow: hidden;
+    }
 
-/* 1行の表示 */
-.board {
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-  font-size: 22px;
-  padding: 14px 16px;
-  border-top: 1px solid #444;
-}
+    h1 {
+      text-align: center;
+      margin: 16px 0;
+      font-size: 26px;
+      letter-spacing: 2px;
+    }
 
-/* 列車名（色付き） */
-.train {
-  min-width: 180px;
-  font-weight: 600;
-}
+    #container {
+      height: calc(100vh - 70px);
+      overflow: hidden;
+      position: relative;
+    }
 
-/* 種別ごとの色 */
-.nozomi  { color: #FFD400; } /* 黄色 */
-.hikari  { color: #FF3B30; } /* 赤 */
-.kodama  { color: #007AFF; } /* 青 */
-.sakura  { color: #FF69B4; } /* ピンク */
-.mizuho  { color: #FF9500; } /* オレンジ */
-.tsubame { color: #5AC8FA; } /* 水色 */
+    #list {
+      position: absolute;
+      width: 100%;
+    }
 
-/* 時刻・行先（白固定） */
-.time {
-  color: #fff;
-  min-width: 80px;
-  text-align: center;
-}
+    .row {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      border-bottom: 1px solid #333;
+      font-size: 22px;
+    }
 
-.dest {
-  color: #fff;
-  margin-left: 12px;
-}
-</style>
+    .time {
+      width: 90px;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .train {
+      width: 220px;
+      font-weight: bold;
+    }
+
+    .destination {
+      flex: 1;
+      color: #fff;
+      text-align: right;
+    }
+
+    /* 列車色 */
+    .nozomi { color: #FFD400; }   /* 黄色 */
+    .hikari { color: #FF3333; }   /* 赤 */
+    .kodama { color: #3399FF; }   /* 青 */
+    .sakura { color: #FF66B2; }   /* ピンク */
+    .mizuho { color: #FF9933; }   /* オレンジ */
+    .tsubame { color: #66CCFF; }  /* 水色 */
+  </style>
 </head>
 
 <body>
+  <h1>博多駅 新幹線 時刻表</h1>
 
-<div id="board"></div>
+  <div id="container">
+    <div id="list"></div>
+  </div>
 
-<script>
-fetch('hakata.json')
-  .then(res => res.json())
-  .then(data => {
-    const now = new Date();
-    const nowMin = now.getHours() * 60 + now.getMinutes();
+  <script>
+    const list = document.getElementById("list");
 
-    // 次に来る列車を表示
-    const next = data.trains.find(t => {
-      const [h, m] = t.time.split(':').map(Number);
-      return h * 60 + m >= nowMin;
-    });
+    fetch("hakata.json")
+      .then(res => res.json())
+      .then(data => {
+        // 時刻順に並び替え
+        data.sort((a, b) => a.time.localeCompare(b.time));
 
-    if (!next) return;
+        data.forEach(train => {
+          const row = document.createElement("div");
+          row.className = "row";
 
-    const row = document.createElement('div');
-    row.className = 'board';
+          row.innerHTML = `
+            <div class="time">${train.time}</div>
+            <div class="train ${train.type}">
+              ${train.name}${train.number}号
+            </div>
+            <div class="destination">${train.destination}</div>
+          `;
 
-    row.innerHTML = `
-      <span class="train ${next.type}">
-        ${next.name}
-      </span>
-      <span class="time">
-        ${next.time}
-      </span>
-      <span class="dest">
-        ${next.destination || '鹿児島中央'}
-      </span>
-    `;
+          list.appendChild(row);
+        });
 
-    document.getElementById('board').appendChild(row);
-  });
-</script>
+        startScroll();
+      });
 
+    function startScroll() {
+      let pos = 0;
+      const speed = 0.3; // ← スクロール速度（配信用に調整可）
+
+      function scroll() {
+        pos -= speed;
+        list.style.transform = `translateY(${pos}px)`;
+
+        // 最後まで行ったら最初に戻す
+        if (Math.abs(pos) > list.offsetHeight) {
+          pos = window.innerHeight;
+        }
+        requestAnimationFrame(scroll);
+      }
+      scroll();
+    }
+  </script>
 </body>
 </html>
