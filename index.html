@@ -1,108 +1,122 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
-<title>博多駅 発着案内</title>
+  <meta charset="UTF-8">
+  <title>博多駅 新幹線 時刻表</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body {
-  margin: 0;
-  background: #000;
-  color: #fff;
-  font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
-}
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", sans-serif;
+      overflow: hidden;
+    }
 
-header {
-  text-align: center;
-  font-size: 28px;
-  padding: 12px;
-  background: #111;
-  border-bottom: 2px solid #333;
-}
+    h1 {
+      text-align: center;
+      margin: 16px 0;
+      font-size: 26px;
+      letter-spacing: 2px;
+    }
 
-#container {
-  height: calc(100vh - 60px);
-  overflow: hidden;
-}
+    #container {
+      height: calc(100vh - 70px);
+      overflow: hidden;
+      position: relative;
+    }
 
-#list {
-  padding: 10px 30px;
-}
+    #list {
+      position: absolute;
+      width: 100%;
+    }
 
-.row {
-  display: grid;
-  grid-template-columns: 260px 120px 1fr;
-  align-items: center;
-  font-size: 24px;
-  padding: 6px 0;
-  border-bottom: 1px solid #222;
-}
+    .row {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      border-bottom: 1px solid #333;
+      font-size: 22px;
+    }
 
-/* 列車種別 色分け */
-.nozomi   { color: yellow; }
-.hikari   { color: red; }
-.kodama   { color: dodgerblue; }
-.sakura   { color: pink; }
-.mizuho   { color: orange; }
-.tsubame  { color: lightblue; }
+    .time {
+      width: 90px;
+      color: #fff;
+      font-weight: bold;
+    }
 
-/* 時刻・行先は白 */
-.time, .dest {
-  color: white;
-}
-</style>
+    .train {
+      width: 220px;
+      font-weight: bold;
+    }
+
+    .destination {
+      flex: 1;
+      color: #fff;
+      text-align: right;
+    }
+
+    /* 列車色 */
+    .nozomi { color: #FFD400; }   /* 黄色 */
+    .hikari { color: #FF3333; }   /* 赤 */
+    .kodama { color: #3399FF; }   /* 青 */
+    .sakura { color: #FF66B2; }   /* ピンク */
+    .mizuho { color: #FF9933; }   /* オレンジ */
+    .tsubame { color: #66CCFF; }  /* 水色 */
+  </style>
 </head>
 
 <body>
+  <h1>博多駅 新幹線 時刻表</h1>
 
-<header>
-  12月29日　博多駅 発着案内　8:00〜15:00
-</header>
+  <div id="container">
+    <div id="list"></div>
+  </div>
 
-<div id="container">
-  <div id="list"></div>
-</div>
-
-<script>
-fetch("hakata.json")
-  .then(res => res.json())
-  .then(data => {
+  <script>
     const list = document.getElementById("list");
 
-    data.trains.forEach(t => {
-      const row = document.createElement("div");
-      row.className = "row";
+    fetch("hakata.json")
+      .then(res => res.json())
+      .then(data => {
+        // 時刻順に並び替え
+        data.sort((a, b) => a.time.localeCompare(b.time));
 
-      const name = document.createElement("div");
-      name.className = t.type;
-      name.textContent = `${t.name}${t.no}`;
+        data.forEach(train => {
+          const row = document.createElement("div");
+          row.className = "row";
 
-      const time = document.createElement("div");
-      time.className = "time";
-      time.textContent = t.time;
+          row.innerHTML = `
+            <div class="time">${train.time}</div>
+            <div class="train ${train.type}">
+              ${train.name}${train.number}号
+            </div>
+            <div class="destination">${train.destination}</div>
+          `;
 
-      const dest = document.createElement("div");
-      dest.className = "dest";
-      dest.textContent = t.destination;
+          list.appendChild(row);
+        });
 
-      row.appendChild(name);
-      row.appendChild(time);
-      row.appendChild(dest);
+        startScroll();
+      });
 
-      list.appendChild(row);
-    });
+    function startScroll() {
+      let pos = 0;
+      const speed = 0.3; // ← スクロール速度（配信用に調整可）
 
-    // 自動スクロール
-    let pos = 0;
-    setInterval(() => {
-      pos++;
-      list.style.transform = `translateY(-${pos}px)`;
-      if (pos > list.scrollHeight - window.innerHeight) {
-        pos = 0;
+      function scroll() {
+        pos -= speed;
+        list.style.transform = `translateY(${pos}px)`;
+
+        // 最後まで行ったら最初に戻す
+        if (Math.abs(pos) > list.offsetHeight) {
+          pos = window.innerHeight;
+        }
+        requestAnimationFrame(scroll);
       }
-    }, 50);
-  });
-</script>
-
+      scroll();
+    }
+  </script>
 </body>
 </html>
