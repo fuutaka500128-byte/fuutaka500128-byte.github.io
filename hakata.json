@@ -1,6 +1,103 @@
-[
-  { "type": "のぞみ", "number": 3, "time": "21:58", "destination": "東京" },
-  { "type": "ひかり", "number": 594, "time": "22:10", "destination": "新大阪" },
-  { "type": "さくら", "number": 570, "time": "22:18", "destination": "鹿児島中央" },
-  { "type": "みずほ", "number": 612, "time": "22:30", "destination": "鹿児島中央" }
-]
+{
+  "date": "2025-12-27",
+  "station": "博多",
+  "direction": "up",
+  "trains": [
+    {
+      "time": "06:00",
+      "service": "nozomi",
+      "number": "2号",
+      "destination": "東京",
+      "status": "normal",
+      "delay": 0
+    },
+    {
+      "time": "06:07",
+      "service": "kodama",
+      "number": "838号",
+      "destination": "岡山",
+      "status": "normal",
+      "delay": 0
+    },
+    {
+      "time": "06:21",
+      "service": "kodama",
+      "number": "840号",
+      "destination": "新大阪",
+      "status": "normal",
+      "delay": 0
+    },
+    {
+      "time": "06:36",
+      "service": "nozomi",
+      "number": "4号",
+      "destination": "東京",
+      "status": "normal",
+      "delay": 0
+    },
+    {
+      "time": "06:59",
+      "service": "sakura",
+      "number": "540号",
+      "destination": "新大阪",
+      "status": "normal",
+      "delay": 0
+    },
+    {
+      "time": "07:04",
+      "service": "kodama",
+      "number": "842号",
+      "destination": "新大阪",
+      "status": "normal",
+      "delay": 0
+    },
+    {
+      "time": "07:15",
+      "service": "nozomi",
+      "number": "6号",
+      "destination": "東京",
+      "status": "normal",
+      "delay": 0
+    },
+    {
+      "time": "07:36",
+      "service": "nozomi",
+      "number": "8号",
+      "destination": "東京",
+      "status": "normal",
+      "delay": 0
+    },
+    {
+      "time": "07:49",
+      "service": "kodama",
+      "number": "844号",
+      "destination": "岡山",
+      "status": "normal",
+      "delay": 0
+    },
+    {
+      "time": "07:53",
+      "service": "mizuho",
+      "number": "600号",
+      "destination": "新大阪",
+      "status": "normal",
+      "delay": 0
+    },
+    {
+      "time": "08:00",
+      "service": "nozomi",
+      "number": "10号",
+      "destination": "東京",
+      "status": "normal",
+      "delay": 0
+    },
+    {
+      "time": "08:03",
+      "service": "tsubame",
+      "number": "302号",
+      "destination": "小倉",
+      "status": "normal",
+      "delay": 0
+    }
+  ]
+}
