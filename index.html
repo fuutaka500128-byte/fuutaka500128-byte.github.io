@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<style>
+/* ===== 全体 ===== */
+body {
+  margin: 0;
+  background: black;
+  overflow: hidden;
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+}
+
+/* 表示エリア（画面下・中央寄せ） */
+#ticker {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* スクロール本体 */
+#scroll {
+  display: inline-block;
+  padding-left: 20px;   /* ← 始まりの見切り（短め） */
+  animation: scroll 60s linear infinite;
+}
+
+/* 各列車 */
+.train {
+  display: inline-block;
+  margin-right: 20px;   /* ← 列車間の隙間（詰め気味） */
+  font-size: 32px;
+}
+
+/* 色指定 */
+.nozomi { color: #FFD800; }   /* 黄色 */
+.hikari { color: #FF3B3B; }   /* 赤 */
+.kodama { color: #2E6BFF; }   /* 青 */
+.sakura { color: #FF7FCF; }   /* ピンク */
+.mizuho { color: #FF8C00; }   /* オレンジ */
+.tsubame{ color: #6EC6FF; }   /* 水色 */
+
+/* 白文字 */
+.time, .dest {
+  color: white;
+  margin-left: 8px;
+}
+
+/* スクロール */
+@keyframes scroll {
+  0%   { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+</style>
+</head>
+
+<body>
+<div id="ticker">
+  <div id="scroll">
+
+    <!-- ===== 2025/12/27（土）博多駅 新幹線 6:00〜19:59（例・全列車形式） ===== -->
+
+    <span class="train">
+      <span class="nozomi">のぞみ1号</span>
+      <span class="time">6:00</span>
+      <span class="dest">東京</span>
+    </span>
+
+    <span class="train">
+      <span class="sakura">さくら401号</span>
+      <span class="time">6:04</span>
+      <span class="dest">鹿児島中央</span>
+    </span>
+
+    <span class="train">
+      <span class="mizuho">みずほ601号</span>
+      <span class="time">6:16</span>
+      <span class="dest">鹿児島中央</span>
+    </span>
+
+    <span class="train">
+      <span class="kodama">こだま701号</span>
+      <span class="time">6:33</span>
+      <span class="dest">新大阪</span>
+    </span>
+
+    <span class="train">
+      <span class="hikari">ひかり531号</span>
+      <span class="time">6:48</span>
+      <span class="dest">新大阪</span>
+    </span>
+
+    <span class="train">
+      <span class="tsubame">つばめ305号</span>
+      <span class="time">7:02</span>
+      <span class="dest">熊本</span>
+    </span>
+
+    <!-- ★ここに同じ形式で 19:59 まで全列車を追加していく -->
+
+  </div>
+</div>
+</body>
+</html>
