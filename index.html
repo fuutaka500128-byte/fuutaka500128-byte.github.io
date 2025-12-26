@@ -1,63 +1,63 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>新幹線 電光掲示板</title>
 
 <style>
-  body {
-    margin: 0;
-    background: black;
-    overflow: hidden;
-  }
+body {
+  margin: 0;
+  background: black;
+  overflow: hidden;
+}
 
-  /* 表示エリア */
-  .ticker {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 40px;
-    background: black;
-    overflow: hidden;
-    display: flex;
-    align-items: center; /* 縦中央 */
-  }
+/* 表示エリア */
+.ticker {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
+  background: black;
+  overflow: hidden;
+  display: flex;
+  align-items: center;   /* 縦中央 */
+}
 
-  /* スクロール全体 */
-  .track {
-    display: flex;
-    width: max-content;
-    animation: scroll 60s linear infinite; /* ← スクロール速度 */
-  }
+/* スクロール本体（1回のみ） */
+.track {
+  display: flex;
+  width: max-content;
+  animation: scroll 35s linear infinite; /* ← やや遅め */
+}
 
-  /* 各列車ブロック */
-  .train {
-    font-size: 20px;       /* 文字サイズ */
-    line-height: 1.4;     /* 号数欠け防止 */
-    white-space: nowrap;
-    margin-right: 16px;   /* 見切り間隔 */
-    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", sans-serif;
-  }
+/* 各列車 */
+.train {
+  font-size: 20px;
+  line-height: 1.4;       /* 号数欠け防止 */
+  white-space: nowrap;
+  margin-right: 24px;     /* 見切り間隔 */
+  font-family: -apple-system, BlinkMacSystemFont,
+               "Hiragino Kaku Gothic ProN", sans-serif;
+}
 
-  /* 種別色 */
-  .nozomi { color: #ffd800; }   /* のぞみ：黄色 */
-  .hikari { color: #ffffff; }
-  .kodama { color: #4da6ff; }   /* こだま：青 */
-  .sakura { color: #ff66b2; }   /* さくら：ピンク */
-  .tsubame { color: #7fdfff; }  /* つばめ：水色 */
+/* 種別色 */
+.nozomi { color: #ffd800; }   /* のぞみ：黄色 */
+.hikari { color: #ff4444; }   /* ひかり：赤 */
+.kodama { color: #4da6ff; }   /* こだま：青 */
+.sakura { color: #ff66b2; }   /* さくら：ピンク */
+.tsubame{ color: #7fdfff; }   /* つばめ：水色 */
 
-  /* 時刻・行先は必ず白 */
-  .time,
-  .dest {
-    color: #ffffff;
-  }
+/* 時刻・行先は白 */
+.time, .dest {
+  color: #ffffff;
+}
 
-  @keyframes scroll {
-    from { transform: translateX(80%); }
-    to   { transform: translateX(-80%); }
-  }
+/* 方法B：スクロール距離を短く */
+@keyframes scroll {
+  from { transform: translateX(80%); }
+  to   { transform: translateX(-80%); }
+}
 </style>
 </head>
 
@@ -68,50 +68,31 @@
 
     <div class="train">
       <span class="nozomi">のぞみ 12号</span>
-      <span class="time">　22:30　</span>
+      <span class="time"> 22:30 </span>
       <span class="dest">鹿児島中央</span>
     </div>
 
     <div class="train">
+      <span class="hikari">ひかり 594号</span>
+      <span class="time"> 22:35 </span>
+      <span class="dest">新大阪</span>
+    </div>
+
+    <div class="train">
       <span class="kodama">こだま 856号</span>
-      <span class="time">　22:42　</span>
+      <span class="time"> 22:42 </span>
       <span class="dest">博多</span>
     </div>
 
     <div class="train">
       <span class="sakura">さくら 570号</span>
-      <span class="time">　22:54　</span>
+      <span class="time"> 22:54 </span>
       <span class="dest">新大阪</span>
     </div>
 
     <div class="train">
       <span class="tsubame">つばめ 321号</span>
-      <span class="time">　22:55　</span>
-      <span class="dest">鹿児島中央</span>
-    </div>
-
-    <!-- ループ安定用（同内容を再配置） -->
-    <div class="train">
-      <span class="nozomi">のぞみ 12号</span>
-      <span class="time">　22:30　</span>
-      <span class="dest">鹿児島中央</span>
-    </div>
-
-    <div class="train">
-      <span class="kodama">こだま 856号</span>
-      <span class="time">　22:42　</span>
-      <span class="dest">博多</span>
-    </div>
-
-    <div class="train">
-      <span class="sakura">さくら 570号</span>
-      <span class="time">　22:54　</span>
-      <span class="dest">新大阪</span>
-    </div>
-
-    <div class="train">
-      <span class="tsubame">つばめ 321号</span>
-      <span class="time">　22:55　</span>
+      <span class="time"> 22:55 </span>
       <span class="dest">鹿児島中央</span>
     </div>
 
