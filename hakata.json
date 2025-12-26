@@ -1,0 +1,47 @@
+[
+  {
+    "time": "06:00",
+    "type": "nozomi",
+    "name": "のぞみ",
+    "number": "2",
+    "destination": "東京"
+  },
+  {
+    "time": "06:07",
+    "type": "kodama",
+    "name": "こだま",
+    "number": "838",
+    "destination": "新大阪"
+  },
+  {
+    "time": "06:21",
+    "type": "kodama",
+    "name": "こだま",
+    "number": "840",
+    "destination": "新大阪"
+  },
+  {
+    "time": "06:36",
+    "type": "nozomi",
+    "name": "のぞみ",
+    "number": "4",
+    "destination": "東京"
+  },
+  {
+    "time": "06:59",
+    "type": "sakura",
+    "name": "さくら",
+    "number": "540",
+    "destination": "鹿児島中央"
+  },
+
+  // …ここに同じ形式でどんどん追加…
+
+  {
+    "time": "22:30",
+    "type": "mizuho",
+    "name": "みずほ",
+    "number": "612",
+    "destination": "鹿児島中央"
+  }
+]
