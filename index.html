@@ -1,82 +1,91 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>博多行き新幹線 時刻表</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: system-ui, sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 16px;
-    }
-    h1 {
-      text-align: center;
-    }
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .time {
-      font-size: 28px;
-      font-weight: bold;
-    }
-    .name {
-      color: #555;
-      margin-top: 4px;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>新幹線 発車案内</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  background: #000;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* 1行の表示 */
+.board {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font-size: 22px;
+  padding: 14px 16px;
+  border-top: 1px solid #444;
+}
+
+/* 列車名（色付き） */
+.train {
+  min-width: 180px;
+  font-weight: 600;
+}
+
+/* 種別ごとの色 */
+.nozomi  { color: #FFD400; } /* 黄色 */
+.hikari  { color: #FF3B30; } /* 赤 */
+.kodama  { color: #007AFF; } /* 青 */
+.sakura  { color: #FF69B4; } /* ピンク */
+.mizuho  { color: #FF9500; } /* オレンジ */
+.tsubame { color: #5AC8FA; } /* 水色 */
+
+/* 時刻・行先（白固定） */
+.time {
+  color: #fff;
+  min-width: 80px;
+  text-align: center;
+}
+
+.dest {
+  color: #fff;
+  margin-left: 12px;
+}
+</style>
 </head>
+
 <body>
 
-<h1>博多行き新幹線 時刻表</h1>
-<div id="list"></div>
+<div id="board"></div>
 
 <script>
 fetch('hakata.json')
   .then(res => res.json())
   .then(data => {
-    const list = document.getElementById('list');
-
     const now = new Date();
-    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+    const nowMin = now.getHours() * 60 + now.getMinutes();
 
-    let firstFutureCard = null;
-
-    data.trains.forEach(train => {
-      const [h, m] = train.time.split(':').map(Number);
-      const trainMinutes = h * 60 + m;
-
-      // ⬇ 過去の列車は表示しない
-      if (trainMinutes < nowMinutes) return;
-
-      const card = document.createElement('div');
-      card.className = 'card';
-
-      card.innerHTML = `
-        <div class="time">${train.time}</div>
-        <div class="name">${train.name} (${train.type})</div>
-      `;
-
-      list.appendChild(card);
-
-      // ⬇ 最初の「未来列車」を記録
-      if (!firstFutureCard) {
-        firstFutureCard = card;
-      }
+    // 次に来る列車を表示
+    const next = data.trains.find(t => {
+      const [h, m] = t.time.split(':').map(Number);
+      return h * 60 + m >= nowMin;
     });
 
-    // ⬇ 自動スクロール
-    if (firstFutureCard) {
-      firstFutureCard.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center'
-      });
-    }
+    if (!next) return;
+
+    const row = document.createElement('div');
+    row.className = 'board';
+
+    row.innerHTML = `
+      <span class="train ${next.type}">
+        ${next.name}
+      </span>
+      <span class="time">
+        ${next.time}
+      </span>
+      <span class="dest">
+        ${next.destination || '鹿児島中央'}
+      </span>
+    `;
+
+    document.getElementById('board').appendChild(row);
   });
 </script>
 
