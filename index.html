@@ -1,167 +1,65 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8" />
-<title>博多駅 新幹線案内</title>
+<script>
+async function loadTimetable() {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
 
-<style>
-body {
-  margin: 0;
-  background: black;
-  overflow: hidden;
-  font-family: -apple-system, BlinkMacSystemFont,
-               "Hiragino Kaku Gothic ProN",
-               "Yu Gothic", Meiryo, sans-serif;
-}
+  const jsonPath = `timetable/${yyyy}${mm}${dd}.json`;
 
-/* 表示エリア */
-#ticker {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 64px;
-  overflow: hidden;
-}
-
-/* スクロール本体 */
-#track {
-  display: flex;
-  width: max-content;
-  align-items: center;
-  white-space: nowrap;
-  animation: scroll 45s linear infinite;
-  will-change: transform;
-}
-
-/* 1列分 */
-.group {
-  display: inline-flex;
-  align-items: center;
-}
-
-/* 各列車 */
-.item {
-  display: inline-flex;
-  align-items: center;
-  margin-right: 8px;      /* ← 見切り間隔（最短） */
-  font-size: 30px;        /* ← 文字サイズ */
-}
-
-.train {
-  font-weight: bold;
-  margin-right: 6px;
-}
-
-.time, .dest {
-  color: white;
-  margin-right: 6px;
-}
-
-/* 色定義 */
-.nozomi { color: #FFD700; }
-.hikari { color: #FF3B30; }
-.kodama { color: #007AFF; }
-.sakura { color: #FF69B4; }
-.mizuho { color: #FF9500; }
-.tsubame { color: #5AC8FA; }
-
-/* 無限スクロール（完全版） */
-@keyframes scroll {
-  0% {
-    transform: translateX(0);
+  let data;
+  try {
+    const res = await fetch(jsonPath);
+    if (!res.ok) throw new Error();
+    data = await res.json();
+  } catch {
+    console.error("ダイヤJSONが見つかりません:", jsonPath);
+    return;
   }
-  100% {
-    transform: translateX(-50%);
-  }
+
+  const track = document.getElementById("track");
+  track.innerHTML = "";
+
+  const now = new Date();
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+  data.trains.forEach(train => {
+    const [h, m] = train.time.split(":").map(Number);
+    const trainMinutes = h * 60 + m;
+
+    // 運休は時刻に関係なく表示
+    if (train.status !== "cancel" && trainMinutes < nowMinutes) return;
+
+    const item = document.createElement("div");
+    item.className = "item";
+
+    let statusText = "";
+    let timeText = train.time;
+
+    if (train.status === "delay") {
+      statusText = `（遅延${train.delay}分）`;
+      timeText = `${train.time}+${train.delay}`;
+    }
+
+    if (train.status === "cancel") {
+      statusText = "（運休）";
+    }
+
+    item.innerHTML = `
+      <span class="train ${train.service}">
+        ${train.service}${train.number}
+      </span>
+      <span class="time">${timeText}</span>
+      <span class="dest">${train.destination}${statusText}</span>
+    `;
+
+    track.appendChild(item);
+  });
 }
-</style>
-</head>
 
-<body>
+/* 初回読み込み */
+loadTimetable();
 
-<div id="ticker">
-  <div id="track">
-
-    <!-- ===== 1セット目 ===== -->
-    <div class="group">
-      <div class="item">
-        <span class="train nozomi">のぞみ12号</span>
-        <span class="time">6:03</span>
-        <span class="dest">東京</span>
-      </div>
-
-      <div class="item">
-        <span class="train sakura">さくら401号</span>
-        <span class="time">6:10</span>
-        <span class="dest">鹿児島中央</span>
-      </div>
-
-      <div class="item">
-        <span class="train hikari">ひかり502号</span>
-        <span class="time">6:16</span>
-        <span class="dest">新大阪</span>
-      </div>
-
-      <div class="item">
-        <span class="train kodama">こだま811号</span>
-        <span class="time">6:22</span>
-        <span class="dest">新下関</span>
-      </div>
-
-      <div class="item">
-        <span class="train mizuho">みずほ601号</span>
-        <span class="time">6:30</span>
-        <span class="dest">鹿児島中央</span>
-      </div>
-
-      <div class="item">
-        <span class="train tsubame">つばめ310号</span>
-        <span class="time">6:38</span>
-        <span class="dest">熊本</span>
-      </div>
-    </div>
-
-    <!-- ===== 2セット目（複製・見えないつなぎ） ===== -->
-    <div class="group">
-      <div class="item">
-        <span class="train nozomi">のぞみ12号</span>
-        <span class="time">6:03</span>
-        <span class="dest">東京</span>
-      </div>
-
-      <div class="item">
-        <span class="train sakura">さくら401号</span>
-        <span class="time">6:10</span>
-        <span class="dest">鹿児島中央</span>
-      </div>
-
-      <div class="item">
-        <span class="train hikari">ひかり502号</span>
-        <span class="time">6:16</span>
-        <span class="dest">新大阪</span>
-      </div>
-
-      <div class="item">
-        <span class="train kodama">こだま811号</span>
-        <span class="time">6:22</span>
-        <span class="dest">新下関</span>
-      </div>
-
-      <div class="item">
-        <span class="train mizuho">みずほ601号</span>
-        <span class="time">6:30</span>
-        <span class="dest">鹿児島中央</span>
-      </div>
-
-      <div class="item">
-        <span class="train tsubame">つばめ310号</span>
-        <span class="time">6:38</span>
-        <span class="dest">熊本</span>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-</body>
-</html>
+/* ⏱ 1分ごとに自動更新 */
+setInterval(loadTimetable, 60000);
+</script>
