@@ -35,16 +35,17 @@ body {
 .track {
   display: inline-flex;
   white-space: nowrap;
-  animation: scroll 40s linear infinite;
+  animation: scroll 45s linear infinite;
 }
 
 .train {
   display: inline-flex;
   align-items: baseline;
-  margin-right: 8px;
-  font-size: 22px;
+  margin-right: 12px;
+  font-size: 24px;
 }
 
+/* 種別色 */
 .nozomi { color: #ffd800; }
 .hikari { color: #ff3333; }
 .kodama { color: #3399ff; }
@@ -52,7 +53,8 @@ body {
 .mizuho { color: #ff9900; }
 .tsubame { color: #66ccff; }
 
-.time, .dest {
+.time,
+.dest {
   color: white;
   margin-left: 6px;
 }
@@ -65,14 +67,48 @@ body {
 </head>
 
 <body>
+
 <div class="ticker">
   <div class="track">
+
+    <div class="train">
+      <span class="nozomi">のぞみ12号</span>
+      <span class="time">06:00</span>
+      <span class="dest">東京</span>
+    </div>
+
     <div class="train">
       <span class="hikari">ひかり590号</span>
       <span class="time">06:18</span>
       <span class="dest">新大阪</span>
     </div>
+
+    <div class="train">
+      <span class="kodama">こだま856号</span>
+      <span class="time">06:30</span>
+      <span class="dest">博多</span>
+    </div>
+
+    <div class="train">
+      <span class="sakura">さくら570号</span>
+      <span class="time">06:42</span>
+      <span class="dest">新大阪</span>
+    </div>
+
+    <div class="train">
+      <span class="mizuho">みずほ612号</span>
+      <span class="time">06:55</span>
+      <span class="dest">鹿児島中央</span>
+    </div>
+
+    <div class="train">
+      <span class="tsubame">つばめ321号</span>
+      <span class="time">07:05</span>
+      <span class="dest">熊本</span>
+    </div>
+
   </div>
 </div>
+
 </body>
 </html>
