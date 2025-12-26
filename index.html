@@ -1,68 +1,84 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>博多行き新幹線 時刻表</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-                   Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
-      background: #f7f7f7;
+      font-family: system-ui, sans-serif;
+      background: #f4f4f4;
       margin: 0;
-      padding: 20px;
+      padding: 16px;
     }
     h1 {
       text-align: center;
     }
-    .train {
+    .card {
       background: #fff;
-      margin: 10px 0;
-      padding: 12px;
-      border-radius: 6px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     .time {
-      font-size: 20px;
+      font-size: 28px;
       font-weight: bold;
     }
-    .type {
+    .name {
       color: #555;
+      margin-top: 4px;
     }
   </style>
 </head>
-
 <body>
-  <h1>博多行き新幹線 時刻表</h1>
-  <div id="list">読み込み中…</div>
 
-  <script>
-    fetch("./hakata.json")
-      .then(response => {
-        if (!response.ok) {
-          throw new Error("JSONが読み込めません");
-        }
-        return response.json();
-      })
-      .then(data => {
-        const list = document.getElementById("list");
-        list.innerHTML = "";
+<h1>博多行き新幹線 時刻表</h1>
+<div id="list"></div>
 
-        data.trains.forEach(train => {
-          const div = document.createElement("div");
-          div.className = "train";
-          div.innerHTML = `
-            <div class="time">${train.time}</div>
-            <div class="type">${train.name}（${train.type}）</div>
-          `;
-          list.appendChild(div);
-        });
-      })
-      .catch(error => {
-        document.getElementById("list").textContent =
-          "データの読み込みに失敗しました";
-        console.error(error);
+<script>
+fetch('hakata.json')
+  .then(res => res.json())
+  .then(data => {
+    const list = document.getElementById('list');
+
+    const now = new Date();
+    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+    let firstFutureCard = null;
+
+    data.trains.forEach(train => {
+      const [h, m] = train.time.split(':').map(Number);
+      const trainMinutes = h * 60 + m;
+
+      // ⬇ 過去の列車は表示しない
+      if (trainMinutes < nowMinutes) return;
+
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      card.innerHTML = `
+        <div class="time">${train.time}</div>
+        <div class="name">${train.name} (${train.type})</div>
+      `;
+
+      list.appendChild(card);
+
+      // ⬇ 最初の「未来列車」を記録
+      if (!firstFutureCard) {
+        firstFutureCard = card;
+      }
+    });
+
+    // ⬇ 自動スクロール
+    if (firstFutureCard) {
+      firstFutureCard.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
       });
-  </script>
+    }
+  });
+</script>
+
 </body>
 </html>
