@@ -8,115 +8,136 @@
   <style>
     body {
       margin: 0;
-      background: #000;
-      color: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", sans-serif;
-      overflow: hidden;
+      background: black;
+      color: white;
+      font-family: "Helvetica Neue", Arial, sans-serif;
     }
 
-    h1 {
-      text-align: center;
-      margin: 16px 0;
-      font-size: 26px;
-      letter-spacing: 2px;
-    }
-
+    /* ===== メイン表示 ===== */
     #container {
-      height: calc(100vh - 70px);
+      height: calc(100vh - 60px);
       overflow: hidden;
-      position: relative;
     }
 
-    #list {
-      position: absolute;
-      width: 100%;
+    #timetable {
+      padding: 20px;
     }
 
-    .row {
+    .train-row {
       display: flex;
       align-items: center;
-      padding: 14px 20px;
       border-bottom: 1px solid #333;
-      font-size: 22px;
+      padding: 14px 0;
+      font-size: 28px;
     }
 
     .time {
       width: 90px;
-      color: #fff;
+      text-align: left;
+      color: white;
+    }
+
+    .name {
+      margin-left: 20px;
       font-weight: bold;
     }
 
-    .train {
-      width: 220px;
+    /* ===== 種別色 ===== */
+    .のぞみ { color: yellow; }
+    .ひかり { color: red; }
+    .こだま { color: deepskyblue; }
+    .さくら { color: hotpink; }
+    .みずほ { color: orange; }
+    .つばめ { color: lightblue; }
+
+    /* ===== 行先バー（画面下固定） ===== */
+    #destination-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+
+      background: black;
+      border-top: 2px solid #333;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 28px;
       font-weight: bold;
+      letter-spacing: 2px;
     }
 
-    .destination {
-      flex: 1;
-      color: #fff;
-      text-align: right;
+    #destination-text {
+      white-space: nowrap;
+      color: white;
     }
-
-    /* 列車色 */
-    .nozomi { color: #FFD400; }   /* 黄色 */
-    .hikari { color: #FF3333; }   /* 赤 */
-    .kodama { color: #3399FF; }   /* 青 */
-    .sakura { color: #FF66B2; }   /* ピンク */
-    .mizuho { color: #FF9933; }   /* オレンジ */
-    .tsubame { color: #66CCFF; }  /* 水色 */
   </style>
 </head>
 
 <body>
-  <h1>博多駅 新幹線 時刻表</h1>
 
   <div id="container">
-    <div id="list"></div>
+    <div id="timetable">
+      <!-- JSで描画 -->
+    </div>
+  </div>
+
+  <!-- 行先表示（横書き1行・固定） -->
+  <div id="destination-bar">
+    <span id="destination-text">行先：</span>
   </div>
 
   <script>
-    const list = document.getElementById("list");
+    let timetableData = [];
+    let currentIndex = 0;
 
     fetch("hakata.json")
       .then(res => res.json())
       .then(data => {
-        // 時刻順に並び替え
-        data.sort((a, b) => a.time.localeCompare(b.time));
-
-        data.forEach(train => {
-          const row = document.createElement("div");
-          row.className = "row";
-
-          row.innerHTML = `
-            <div class="time">${train.time}</div>
-            <div class="train ${train.type}">
-              ${train.name}${train.number}号
-            </div>
-            <div class="destination">${train.destination}</div>
-          `;
-
-          list.appendChild(row);
-        });
-
-        startScroll();
+        timetableData = data;
+        renderTimetable();
+        updateDestination();
+        startAutoUpdate();
       });
 
-    function startScroll() {
-      let pos = 0;
-      const speed = 0.3; // ← スクロール速度（配信用に調整可）
+    function renderTimetable() {
+      const timetable = document.getElementById("timetable");
+      timetable.innerHTML = "";
 
-      function scroll() {
-        pos -= speed;
-        list.style.transform = `translateY(${pos}px)`;
+      timetableData.forEach(train => {
+        const row = document.createElement("div");
+        row.className = "train-row";
 
-        // 最後まで行ったら最初に戻す
-        if (Math.abs(pos) > list.offsetHeight) {
-          pos = window.innerHeight;
+        row.innerHTML = `
+          <span class="time">${train.time}</span>
+          <span class="name ${train.type}">
+            ${train.type}${train.number}号
+          </span>
+        `;
+
+        timetable.appendChild(row);
+      });
+    }
+
+    function updateDestination() {
+      const dest = timetableData[currentIndex].destination;
+      document.getElementById("destination-text").textContent =
+        `行先：${dest}`;
+    }
+
+    function startAutoUpdate() {
+      setInterval(() => {
+        currentIndex++;
+        if (currentIndex >= timetableData.length) {
+          currentIndex = 0;
         }
-        requestAnimationFrame(scroll);
-      }
-      scroll();
+        updateDestination();
+      }, 5000); // 速度は今のまま
     }
   </script>
+
 </body>
 </html>
