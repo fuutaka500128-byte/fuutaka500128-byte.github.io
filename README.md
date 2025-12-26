@@ -1,59 +1,63 @@
-<script>
-const board = document.getElementById("board");
+# 博多駅 新幹線案内（スクロール表示）
 
-function loadTimetable() {
-  fetch("./hakata.json")
-    .then(res => res.json())
-    .then(data => {
-      board.innerHTML = "";
+博多駅の新幹線ダイヤをJSONで管理し、  
+index.htmlで電光掲示板風に表示します。
 
-      const now = new Date();
-      const nowMinutes = now.getHours() * 60 + now.getMinutes();
+---
 
-      data.forEach(t => {
-        const [h, m] = t.time.split(":").map(Number);
-        const trainMinutes = h * 60 + m;
+## ダイヤ反映ルール（重要）
 
-        // 過去列車は非表示
-        if (trainMinutes < nowMinutes) return;
+- ダイヤは `timetable` フォルダ内の **JSON** を編集
+- `index.html` は **編集不要**
+- ファイル名は必ず **日付形式**
 
-        const row = document.createElement("div");
-        row.className = "row";
+- 表示日は **端末の現在日付と自動連動**
 
-        const typeClass = {
-          "のぞみ": "nozomi",
-          "ひかり": "hikari",
-          "こだま": "kodama",
-          "さくら": "sakura",
-          "みずほ": "mizuho",
-          "つばめ": "tsubame"
-        }[t.type] || "";
+---
 
-        row.innerHTML = `
-          <div class="top">
-            <div class="train ${typeClass}">
-              ${t.type} ${t.number}号
-            </div>
-            <div class="time">${t.time}</div>
-          </div>
-          <div class="dest">${t.destination}</div>
-        `;
+## JSON必須フォーマット
 
-        board.appendChild(row);
-      });
-
-      // 🔽 ここが⑨の本体
-      board.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    })
-    .catch(() => {
-      board.innerHTML = "ダイヤを読み込めません";
-    });
+```json
+{
+  "date": "2025-12-27",
+  "station": "博多",
+  "trains": [
+    {
+      "direction": "up",
+      "service": "nozomi",
+      "number": "12号",
+      "time": "06:03",
+      "destination": "東京",
+      "status": "normal",
+      "delay": 0
+    }
+  ]
 }
 
-// 🔁 30秒ごとに更新（おすすめ）
-loadTimetable();
-setInterval(loadTimetable, 30000);
-</script>
+---
+
+## なぜこれで十分か
+
+- ❌ 仕様書を書きすぎる → 読まれない  
+- ❌ READMEが長すぎる → 更新されない  
+- ✅ **「どこを触るか」「何を書けば動くか」だけ** → 実運用向き
+
+---
+
+## 補足（安心材料）
+
+- 後で  
+  - 運休  
+  - 遅延  
+  - 日付切替  
+を追加しても **READMEを書き直す必要はない**
+
+---
+
+### 次の一手おすすめ
+- 🔹 `timetable/20251227.json` の**完全テンプレ作成**
+- 🔹 JSONを1分単位で自動フィルタするJS実装
+
+次どっち行く？  
+**A：JSONテンプレ完成**  
+**B：index.html側のJS実装**
