@@ -1,133 +1,68 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>博多駅 新幹線案内</title>
-
-<style>
-body {
-  margin: 0;
-  background: black;
-  overflow: hidden;
-  font-family: -apple-system, BlinkMacSystemFont,
-               "Hiragino Kaku Gothic ProN",
-               "Yu Gothic", Meiryo, sans-serif;
-}
-
-/* テロップ全体 */
-#ticker {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 64px;
-  overflow: hidden;
-}
-
-/* スクロール本体 */
-#track {
-  display: inline-flex;
-  align-items: center;
-  white-space: nowrap;
-  animation: scroll 50s linear infinite;
-}
-
-/* 各列車 */
-.item {
-  display: inline-flex;
-  align-items: center;
-  margin-right: 12px;   /* ← 見切り間隔 */
-  font-size: 28px;
-}
-
-/* 列車名 */
-.train {
-  font-weight: bold;
-  margin-right: 6px;
-}
-
-/* 時刻・行先は白 */
-.time,
-.dest {
-  color: white;
-  margin-right: 6px;
-}
-
-/* 種別色 */
-.nozomi  { color: #FFD700; }
-.hikari  { color: #FF3B30; }
-.kodama  { color: #007AFF; }
-.sakura  { color: #FF69B4; }
-.mizuho  { color: #FF9500; }
-.tsubame { color: #5AC8FA; }
-
-/* スクロール */
-@keyframes scroll {
-  0%   { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
-</style>
+  <meta charset="UTF-8" />
+  <title>博多行き新幹線 時刻表</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .train {
+      background: #fff;
+      margin: 10px 0;
+      padding: 12px;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .time {
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .type {
+      color: #555;
+    }
+  </style>
 </head>
 
 <body>
+  <h1>博多行き新幹線 時刻表</h1>
+  <div id="list">読み込み中…</div>
 
-<div id="ticker">
-  <div id="track"></div>
-</div>
+  <script>
+    fetch("./hakata.json")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("JSONが読み込めません");
+        }
+        return response.json();
+      })
+      .then(data => {
+        const list = document.getElementById("list");
+        list.innerHTML = "";
 
-<script>
-async function loadTimetable() {
-  try {
-    const response = await fetch("hakata.json");
-    if (!response.ok) throw new Error("JSON読み込み失敗");
-
-    const data = await response.json();
-    const track = document.getElementById("track");
-    track.innerHTML = "";
-
-    const now = new Date();
-    const nowMinutes = now.getHours() * 60 + now.getMinutes();
-
-    data.trains.forEach(train => {
-      const [h, m] = train.time.split(":").map(Number);
-      const trainMinutes = h * 60 + m;
-
-      /* 過去列車は表示しない */
-      if (trainMinutes < nowMinutes) return;
-
-      const item = document.createElement("div");
-      item.className = "item";
-
-      const trainSpan = document.createElement("span");
-      trainSpan.className = `train ${train.service}`;
-      trainSpan.textContent = `${train.service_ja}${train.number}`;
-
-      const timeSpan = document.createElement("span");
-      timeSpan.className = "time";
-      timeSpan.textContent = train.time;
-
-      const destSpan = document.createElement("span");
-      destSpan.className = "dest";
-      destSpan.textContent = train.destination;
-
-      item.appendChild(trainSpan);
-      item.appendChild(timeSpan);
-      item.appendChild(destSpan);
-
-      track.appendChild(item);
-    });
-
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-/* 初回表示 */
-loadTimetable();
-
-/* 1分ごとに自動更新 */
-setInterval(loadTimetable, 60000);
-</script>
-
+        data.trains.forEach(train => {
+          const div = document.createElement("div");
+          div.className = "train";
+          div.innerHTML = `
+            <div class="time">${train.time}</div>
+            <div class="type">${train.name}（${train.type}）</div>
+          `;
+          list.appendChild(div);
+        });
+      })
+      .catch(error => {
+        document.getElementById("list").textContent =
+          "データの読み込みに失敗しました";
+        console.error(error);
+      });
+  </script>
 </body>
 </html>
