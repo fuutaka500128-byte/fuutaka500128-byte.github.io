@@ -2,54 +2,58 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
+<title>博多駅 新幹線案内</title>
+
 <style>
-/* ===== 全体 ===== */
 body {
   margin: 0;
   background: black;
   overflow: hidden;
-  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont,
+               "Hiragino Kaku Gothic ProN",
+               "Yu Gothic", Meiryo, sans-serif;
 }
 
-/* 表示エリア（画面下・中央寄せ） */
 #ticker {
-  position: absolute;
-  bottom: 8px;
-  left: 0;
+  position: fixed;
+  bottom: 0;
   width: 100%;
-  white-space: nowrap;
+  height: 64px;
   overflow: hidden;
 }
 
-/* スクロール本体 */
-#scroll {
-  display: inline-block;
-  padding-left: 20px;   /* ← 始まりの見切り（短め） */
-  animation: scroll 60s linear infinite;
+#track {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  animation: scroll 55s linear infinite;
 }
 
-/* 各列車 */
+.item {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 8px; /* ← 見切り間隔 */
+  font-size: 28px;   /* ← 文字サイズ */
+}
+
 .train {
-  display: inline-block;
-  margin-right: 20px;   /* ← 列車間の隙間（詰め気味） */
-  font-size: 32px;
+  font-weight: bold;
+  margin-right: 6px;
 }
 
-/* 色指定 */
-.nozomi { color: #FFD800; }   /* 黄色 */
-.hikari { color: #FF3B3B; }   /* 赤 */
-.kodama { color: #2E6BFF; }   /* 青 */
-.sakura { color: #FF7FCF; }   /* ピンク */
-.mizuho { color: #FF8C00; }   /* オレンジ */
-.tsubame{ color: #6EC6FF; }   /* 水色 */
-
-/* 白文字 */
 .time, .dest {
   color: white;
-  margin-left: 8px;
+  margin-right: 6px;
 }
 
-/* スクロール */
+/* 色定義 */
+.nozomi { color: #FFD700; }
+.hikari { color: #FF3B30; }
+.kodama { color: #007AFF; }
+.sakura { color: #FF69B4; }
+.mizuho { color: #FF9500; }
+.tsubame { color: #5AC8FA; }
+
 @keyframes scroll {
   0%   { transform: translateX(100%); }
   100% { transform: translateX(-100%); }
@@ -58,50 +62,52 @@ body {
 </head>
 
 <body>
+
 <div id="ticker">
-  <div id="scroll">
+  <div id="track">
 
-    <!-- ===== 2025/12/27（土）博多駅 新幹線 6:00〜19:59（例・全列車形式） ===== -->
+    <!-- ▼ ここにダイヤを並べる ▼ -->
 
-    <span class="train">
-      <span class="nozomi">のぞみ1号</span>
-      <span class="time">6:00</span>
+    <div class="item">
+      <span class="train nozomi">のぞみ12号</span>
+      <span class="time">6:03</span>
       <span class="dest">東京</span>
-    </span>
+    </div>
 
-    <span class="train">
-      <span class="sakura">さくら401号</span>
-      <span class="time">6:04</span>
+    <div class="item">
+      <span class="train sakura">さくら401号</span>
+      <span class="time">6:10</span>
       <span class="dest">鹿児島中央</span>
-    </span>
+    </div>
 
-    <span class="train">
-      <span class="mizuho">みずほ601号</span>
+    <div class="item">
+      <span class="train hikari">ひかり502号</span>
       <span class="time">6:16</span>
+      <span class="dest">新大阪</span>
+    </div>
+
+    <div class="item">
+      <span class="train kodama">こだま811号</span>
+      <span class="time">6:22</span>
+      <span class="dest">新下関</span>
+    </div>
+
+    <div class="item">
+      <span class="train mizuho">みずほ601号</span>
+      <span class="time">6:30</span>
       <span class="dest">鹿児島中央</span>
-    </span>
+    </div>
 
-    <span class="train">
-      <span class="kodama">こだま701号</span>
-      <span class="time">6:33</span>
-      <span class="dest">新大阪</span>
-    </span>
-
-    <span class="train">
-      <span class="hikari">ひかり531号</span>
-      <span class="time">6:48</span>
-      <span class="dest">新大阪</span>
-    </span>
-
-    <span class="train">
-      <span class="tsubame">つばめ305号</span>
-      <span class="time">7:02</span>
+    <div class="item">
+      <span class="train tsubame">つばめ310号</span>
+      <span class="time">6:38</span>
       <span class="dest">熊本</span>
-    </span>
+    </div>
 
-    <!-- ★ここに同じ形式で 19:59 まで全列車を追加していく -->
+    <!-- ▲ ここまで ▲ -->
 
   </div>
 </div>
+
 </body>
 </html>
