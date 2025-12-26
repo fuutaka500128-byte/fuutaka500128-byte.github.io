@@ -1,47 +1,156 @@
 [
   {
-    "time": "06:00",
+    "time": "08:00",
     "type": "nozomi",
     "name": "のぞみ",
-    "number": "2",
+    "number": "12",
     "destination": "東京"
   },
   {
-    "time": "06:07",
-    "type": "kodama",
-    "name": "こだま",
-    "number": "838",
-    "destination": "新大阪"
+    "time": "08:05",
+    "type": "mizuho",
+    "name": "みずほ",
+    "number": "601",
+    "destination": "鹿児島中央"
   },
   {
-    "time": "06:21",
+    "time": "08:20",
     "type": "kodama",
     "name": "こだま",
-    "number": "840",
-    "destination": "新大阪"
+    "number": "872",
+    "destination": "岡山"
   },
   {
-    "time": "06:36",
+    "time": "08:36",
     "type": "nozomi",
     "name": "のぞみ",
-    "number": "4",
+    "number": "14",
     "destination": "東京"
   },
   {
-    "time": "06:59",
+    "time": "08:59",
     "type": "sakura",
     "name": "さくら",
     "number": "540",
     "destination": "鹿児島中央"
   },
-
-  // …ここに同じ形式でどんどん追加…
-
   {
-    "time": "22:30",
+    "time": "09:12",
+    "type": "hikari",
+    "name": "ひかり",
+    "number": "503",
+    "destination": "新大阪"
+  },
+  {
+    "time": "09:25",
+    "type": "kodama",
+    "name": "こだま",
+    "number": "874",
+    "destination": "新下関"
+  },
+  {
+    "time": "09:44",
+    "type": "nozomi",
+    "name": "のぞみ",
+    "number": "16",
+    "destination": "東京"
+  },
+  {
+    "time": "10:05",
     "type": "mizuho",
     "name": "みずほ",
-    "number": "612",
+    "number": "603",
     "destination": "鹿児島中央"
+  },
+  {
+    "time": "10:22",
+    "type": "tsubame",
+    "name": "つばめ",
+    "number": "318",
+    "destination": "熊本"
+  },
+  {
+    "time": "10:36",
+    "type": "nozomi",
+    "name": "のぞみ",
+    "number": "18",
+    "destination": "東京"
+  },
+  {
+    "time": "11:00",
+    "type": "sakura",
+    "name": "さくら",
+    "number": "542",
+    "destination": "鹿児島中央"
+  },
+  {
+    "time": "11:24",
+    "type": "kodama",
+    "name": "こだま",
+    "number": "878",
+    "destination": "広島"
+  },
+  {
+    "time": "11:36",
+    "type": "nozomi",
+    "name": "のぞみ",
+    "number": "20",
+    "destination": "東京"
+  },
+  {
+    "time": "12:05",
+    "type": "mizuho",
+    "name": "みずほ",
+    "number": "605",
+    "destination": "鹿児島中央"
+  },
+  {
+    "time": "12:30",
+    "type": "hikari",
+    "name": "ひかり",
+    "number": "507",
+    "destination": "新大阪"
+  },
+  {
+    "time": "13:00",
+    "type": "nozomi",
+    "name": "のぞみ",
+    "number": "24",
+    "destination": "東京"
+  },
+  {
+    "time": "13:22",
+    "type": "kodama",
+    "name": "こだま",
+    "number": "882",
+    "destination": "岡山"
+  },
+  {
+    "time": "13:59",
+    "type": "sakura",
+    "name": "さくら",
+    "number": "546",
+    "destination": "鹿児島中央"
+  },
+  {
+    "time": "14:15",
+    "type": "nozomi",
+    "name": "のぞみ",
+    "number": "26",
+    "destination": "東京"
+  },
+  {
+    "time": "14:40",
+    "type": "mizuho",
+    "name": "みずほ",
+    "number": "607",
+    "destination": "鹿児島中央"
+  },
+  {
+    "time": "15:00",
+    "type": "tsubame",
+    "name": "つばめ",
+    "number": "330",
+    "destination": "熊本"
   }
 ]
