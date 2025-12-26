@@ -18,11 +18,11 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 40px;                 /* ← 安定高さ */
+    height: 40px;
     background: black;
     overflow: hidden;
     display: flex;
-    align-items: center;          /* ← 縦中央 */
+    align-items: center; /* 縦中央 */
   }
 
   /* スクロール全体 */
@@ -32,21 +32,27 @@
     animation: scroll 25s linear infinite; /* ← スクロール速度 */
   }
 
-  /* 各列車 */
+  /* 各列車ブロック */
   .train {
-    font-size: 20px;              /* ← 文字サイズ */
-    line-height: 1.4;             /* ← 号数欠け防止 */
+    font-size: 20px;       /* 文字サイズ */
+    line-height: 1.4;     /* 号数欠け防止 */
     white-space: nowrap;
-    margin-right: 24px;           /* ← 見切り間隔（駅表示っぽく） */
+    margin-right: 24px;   /* 見切り間隔 */
     font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", sans-serif;
   }
 
-  /* 色指定 */
-  .nozomi { color: #ffd800; }     /* のぞみ：黄色 */
+  /* 種別色 */
+  .nozomi { color: #ffd800; }   /* のぞみ：黄色 */
   .hikari { color: #ffffff; }
-  .kodama { color: #4da6ff; }     /* こだま：青 */
-  .sakura { color: #ff66b2; }     /* さくら：ピンク */
-  .tsubame { color: #7fdfff; }    /* つばめ：水色 */
+  .kodama { color: #4da6ff; }   /* こだま：青 */
+  .sakura { color: #ff66b2; }   /* さくら：ピンク */
+  .tsubame { color: #7fdfff; }  /* つばめ：水色 */
+
+  /* 時刻・行先は必ず白 */
+  .time,
+  .dest {
+    color: #ffffff;
+  }
 
   @keyframes scroll {
     from { transform: translateX(100%); }
@@ -59,16 +65,56 @@
 
 <div class="ticker">
   <div class="track">
-    <div class="train nozomi">のぞみ 12号　22:30　鹿児島中央</div>
-    <div class="train kodama">こだま 856号　22:42　博多</div>
-    <div class="train sakura">さくら 570号　22:54　新大阪</div>
-    <div class="train tsubame">つばめ 321号　22:55　鹿児島中央</div>
 
-    <!-- ループ安定用（同じ内容をもう一度） -->
-    <div class="train nozomi">のぞみ 12号　22:30　鹿児島中央</div>
-    <div class="train kodama">こだま 856号　22:42　博多</div>
-    <div class="train sakura">さくら 570号　22:54　新大阪</div>
-    <div class="train tsubame">つばめ 321号　22:55　鹿児島中央</div>
+    <div class="train">
+      <span class="nozomi">のぞみ 12号</span>
+      <span class="time">　22:30　</span>
+      <span class="dest">鹿児島中央</span>
+    </div>
+
+    <div class="train">
+      <span class="kodama">こだま 856号</span>
+      <span class="time">　22:42　</span>
+      <span class="dest">博多</span>
+    </div>
+
+    <div class="train">
+      <span class="sakura">さくら 570号</span>
+      <span class="time">　22:54　</span>
+      <span class="dest">新大阪</span>
+    </div>
+
+    <div class="train">
+      <span class="tsubame">つばめ 321号</span>
+      <span class="time">　22:55　</span>
+      <span class="dest">鹿児島中央</span>
+    </div>
+
+    <!-- ループ安定用（同内容を再配置） -->
+    <div class="train">
+      <span class="nozomi">のぞみ 12号</span>
+      <span class="time">　22:30　</span>
+      <span class="dest">鹿児島中央</span>
+    </div>
+
+    <div class="train">
+      <span class="kodama">こだま 856号</span>
+      <span class="time">　22:42　</span>
+      <span class="dest">博多</span>
+    </div>
+
+    <div class="train">
+      <span class="sakura">さくら 570号</span>
+      <span class="time">　22:54　</span>
+      <span class="dest">新大阪</span>
+    </div>
+
+    <div class="train">
+      <span class="tsubame">つばめ 321号</span>
+      <span class="time">　22:55　</span>
+      <span class="dest">鹿児島中央</span>
+    </div>
+
   </div>
 </div>
 
